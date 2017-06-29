@@ -22,7 +22,8 @@ namespace CarsAndPitsWPF
     {
         ValuesNet net = new ValuesNet(23);
         int currentLevel = 3;
-        int valuesCount = 1000000;              
+        int deepness = 2;
+        int valuesCount = 100000;              
          
         public MainWindow()
         {
@@ -47,7 +48,13 @@ namespace CarsAndPitsWPF
                     currentLevel++;                    
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
                         MainCanvas.Children.Clear();
-                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));                    
+                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));
+
+                    if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
+                        deepness++;
+                        if (deepness > 15) deepness = 15;
+                    }
                     break;
                 case Key.Subtract:
                     if (currentLevel < 2)
@@ -55,10 +62,19 @@ namespace CarsAndPitsWPF
                     currentLevel--;                    
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
                         MainCanvas.Children.Clear();
-                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));                    
+                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));
+
+                    if (!Keyboard.IsKeyDown(Key.LeftCtrl))
+                    {
+                        deepness--;
+                        if (deepness < 1) deepness = 1;
+                    }
                     break;
                 case Key.C:
                     MainCanvas.Children.Clear();
+                    break;
+                case Key.B:
+                    setBaseScale();
                     break;
                 case Key.Escape:
                     Application.Current.Shutdown();
@@ -84,30 +100,61 @@ namespace CarsAndPitsWPF
                 MainCanvas.Children.Add(circle);*/
             }
 
-            List<Rectangle> rects = new List<Rectangle>();
-            //rects.AddRange(net.generateChildRectangles(net.baseSquare));            
+            List<Rectangle> rects = new List<Rectangle>();            
             rects.AddRange(net.generateRectangelsLayer(3));
 
-            addRectsToCanvas(rects);                        
+            addRectsToCanvas(rects);
+            setBaseScale();            
+        }
 
-            double ScaleRateX = MyWindow.Width / 180;
-            double ScaleRateY = MyWindow.Height / 180;
-            double ScaleRate = 4;// Math.Min(ScaleRateX, ScaleRateY);
-            ScaleTransform scale = new ScaleTransform(
-                MainCanvas.LayoutTransform.Value.M11 * ScaleRate, MainCanvas.LayoutTransform.Value.M22 * ScaleRate
-                );
-            MainCanvas.LayoutTransform = scale;
+        private void setBaseScale()
+        {            
+            Matrix m = new Matrix();            
+            m.Translate(0, 0);
+            m.Scale(4, 4);
+
+            MatrixTransform mTransform = new MatrixTransform(m);
+
+            MainCanvas.RenderTransform = mTransform;
             MainCanvas.UpdateLayout();
+        }
+
+        private void fitToRectangle(Rectangle rect)
+        {
+            double ScaleRateX = MyGrid.RenderSize.Width / rect.Width;
+            double ScaleRateY = MyGrid.RenderSize.Height / rect.Height;
+            double ScaleRate = Math.Min(ScaleRateX, ScaleRateY) * 0.96;            
+            Matrix m = new Matrix();
+            double translateLeft = Canvas.GetLeft(rect);
+            double translateTop = Canvas.GetTop(rect);
+            m.Translate(-translateLeft, -translateTop);
+            m.Scale(ScaleRate, ScaleRate);
+
+            MatrixTransform mTransform = new MatrixTransform(m);
+
+            MainCanvas.RenderTransform = mTransform;
+            MainCanvas.UpdateLayout();            
         }
 
         private void addRectsToCanvas(List<Rectangle> rects)
         {
             if (currentLevel < 8)
                 foreach (Rectangle rect in rects)
+                {
                     MainCanvas.Children.Add(rect);
+
+                    rect.MouseUp += Rect_MouseUp;
+                }
 
             Title = string.Format("Total values: {0}, Total rectangles: {1}, Level: {2}, Level rectangles: {3}",
                 valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), rects.Count.ToString());
+        }
+
+        private void Rect_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            Rectangle rect = (Rectangle)sender;
+            fitToRectangle(rect);
+            addRectsToCanvas(net.generateChildRectangles(net.getSquareByPath((int[])rect.DataContext)));            
         }
     }
 }

@@ -17,8 +17,8 @@ namespace CarsAndPitsWPF
 {
     class ValuesNet
     {
-        public Square baseSquare = new Square(-90, -180, 0, 0);
-        public readonly int maxDepth;
+        public Square zeroSquare = new Square(-90, -180, 0, 0);
+        public int maxDepth = 5;
         public double maxValue = 200;
         public int totalSquaresCount = 0;        
 
@@ -32,8 +32,12 @@ namespace CarsAndPitsWPF
             putToSquareTree(lat, lng, value);
         }
 
-        public List<Rectangle> generateChildRectangles(Square square)
-        {            
+        public List<Rectangle> generateChildRectangles(Square square, int deepness = -1)
+        {
+            if (deepness == 0)
+                return new List<Rectangle>();
+            deepness--;
+
             List<Rectangle>[] rectOfRects = new List<Rectangle>[] {
                     new List<Rectangle>(),new List<Rectangle>(),new List<Rectangle>(),new List<Rectangle>()
                 };
@@ -41,7 +45,7 @@ namespace CarsAndPitsWPF
                 if (square.children[i] != null)
                 {
                     rectOfRects[i].Add(generateWPFRectange(square.children[i]));
-                    rectOfRects[i].AddRange(generateChildRectangles(square.children[i]));
+                    rectOfRects[i].AddRange(generateChildRectangles(square.children[i], deepness));
                 }
 
             List<Rectangle> rects = new List<Rectangle>();
@@ -77,15 +81,16 @@ namespace CarsAndPitsWPF
 
         public Rectangle generateWPFRectange(Square square)
         {
-            maxValue = baseSquare.value * 1.001;
+            maxValue = zeroSquare.value * 1.001;
 
             Rectangle rect = new Rectangle();
+            rect.DataContext = square.path;
             rect.Stroke = Brushes.Black;
-            rect.StrokeThickness = 0.25;
+            rect.StrokeThickness = 1 / Math.Pow(1.7, square.level);
             double intesity = 255 - ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
             Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
             Brush fillBrush = new SolidColorBrush(color);
-            fillBrush.Opacity = 0.5;
+            fillBrush.Opacity = 0.1;
             rect.Fill = fillBrush;                        
             rect.Width = 360 / Math.Pow(2, square.level);
             rect.Height = 180 / Math.Pow(2, square.level); //we use 180 instead 360 to get squares (not rectangles)
@@ -99,7 +104,7 @@ namespace CarsAndPitsWPF
         public List<Rectangle> generateRectangelsLayer(int level)
         {
             List<Rectangle> layer = new List<Rectangle>();
-            foreach (Square s in getLayer(baseSquare, level))
+            foreach (Square s in getLayer(zeroSquare, level))
                 layer.Add(generateWPFRectange(s));
             return layer;
         }
@@ -118,8 +123,8 @@ namespace CarsAndPitsWPF
 
         public void putToSquareTree(double lat, double lng, double value)
         {
-            Square square = baseSquare;
-            baseSquare.value += value;
+            Square square = zeroSquare;
+            zeroSquare.value += value;
 
             int[] path = getPathToSquare(lat, lng);
             foreach (int i in path)
@@ -137,7 +142,7 @@ namespace CarsAndPitsWPF
         
         public Square getSquare(double lat, double lng)
         {            
-            Square square = baseSquare;
+            Square square = zeroSquare;
 
             int[] path = getPathToSquare(lat, lng);
             square = getSquare(path);
@@ -147,7 +152,7 @@ namespace CarsAndPitsWPF
 
         public Square getSquare(int[] path)
         {
-            Square square = baseSquare;            
+            Square square = zeroSquare;            
             foreach (int i in path)
             {
                 if (square.children == null)
@@ -203,6 +208,14 @@ namespace CarsAndPitsWPF
 
             return path;
         }     
+        
+        public Square getSquareByPath(int[] path)
+        {
+            Square square = zeroSquare;
+            foreach (int i in path)
+                square = square.children[i];
+            return square;
+        }        
     }
 
     class Square
@@ -211,7 +224,8 @@ namespace CarsAndPitsWPF
         public double lat;
         public double lng ;
         public double value;
-        public Square[] children;                
+        public Square[] children;
+        public int[] path;           
 
         public Square(double lat, double lng, int level, double value)
         {
@@ -219,6 +233,7 @@ namespace CarsAndPitsWPF
             this.lat = lat;
             this.lng = lng;
             this.value = value;
+            path = new int[0];
             children = new Square[4];            
         }
 
@@ -226,8 +241,14 @@ namespace CarsAndPitsWPF
         {
             level = parent.level + 1;
             lat = parent.lat + ((index > 1) ? 180 / Math.Pow(2, parent.level) / 2 : 0);
-            lng = parent.lng + ((index == 1 || index == 3) ? 360 / Math.Pow(2, parent.level) / 2 : 0);
+            lng = parent.lng + ((index == 1 || index == 3) ? 360 / Math.Pow(2, parent.level) / 2 : 0);            
             children = new Square[4];
+
+            //path remembering
+            path = new int[parent.path.Length + 1];
+            parent.path.CopyTo(path, 0);
+            path[path.Length - 1] = index;
+
             this.value = value;
         }
     }
