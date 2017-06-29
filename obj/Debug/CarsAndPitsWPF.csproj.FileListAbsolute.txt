@@ -1,0 +1,14 @@
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe.config
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.csprojResolveAssemblyReference.cache
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\MainWindow.g.cs
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\App.g.cs
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF_MarkupCompile.cache
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF_MarkupCompile.lref
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.pdb
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\MainWindow.baml
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.g.resources
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.Properties.Resources.resources
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.csproj.GenerateResource.Cache
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe
+c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.pdb
