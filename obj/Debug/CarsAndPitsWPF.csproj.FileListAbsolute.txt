@@ -12,3 +12,5 @@ c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3
 c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.csproj.GenerateResource.Cache
 c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe
 c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.pdb
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.xml

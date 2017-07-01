@@ -57,80 +57,84 @@ namespace CarsAndPitsWPF
             putToSquareTree(lat, lng, value);
         }
 
-        public List<Rectangle> generateChildRectangles(Square square, int deepness = -1)
+        public List<Polygon> generateChildPolygons(Square square, int deepness = -1)
         {
             if (deepness == 0)
-                return new List<Rectangle>();
+                return new List<Polygon>();
             deepness--;
 
-            List<Rectangle>[] rectOfRects = new List<Rectangle>[] {
-                    new List<Rectangle>(),new List<Rectangle>(),new List<Rectangle>(),new List<Rectangle>()
+            List<Polygon>[] polyOfpolys = new List<Polygon>[] {
+                    new List<Polygon>(),new List<Polygon>(),new List<Polygon>(),new List<Polygon>()
                 };
             for (int i = 0; i < 4; i++)
                 if (square.children[i] != null)
                 {
-                    rectOfRects[i].Add(generateWPFRectange(square.children[i]));
-                    rectOfRects[i].AddRange(generateChildRectangles(square.children[i], deepness));
+                    polyOfpolys[i].Add(generateWPFPolygon(square.children[i]));
+                    polyOfpolys[i].AddRange(generateChildPolygons(square.children[i], deepness));
                 }
 
-            List<Rectangle> rects = new List<Rectangle>();
-            bool nextAvailable = (rectOfRects[0].Count + rectOfRects[1].Count + rectOfRects[2].Count + rectOfRects[3].Count) > 0;
+            List<Polygon> polys = new List<Polygon>();
+            bool nextAvailable = (polyOfpolys[0].Count + polyOfpolys[1].Count + polyOfpolys[2].Count + polyOfpolys[3].Count) > 0;
             int index = 0;
             while (nextAvailable) {
                 nextAvailable = false;              
-                if (index < rectOfRects[0].Count)
+                if (index < polyOfpolys[0].Count)
                 {
-                    rects.Add(rectOfRects[0][index]);
+                    polys.Add(polyOfpolys[0][index]);
                     nextAvailable = true;
                 }
-                if (index < rectOfRects[1].Count)
+                if (index < polyOfpolys[1].Count)
                 {
-                    rects.Add(rectOfRects[1][index]);
+                    polys.Add(polyOfpolys[1][index]);
                     nextAvailable = true;
                 }
-                if (index < rectOfRects[2].Count)
+                if (index < polyOfpolys[2].Count)
                 {
-                    rects.Add(rectOfRects[2][index]);
+                    polys.Add(polyOfpolys[2][index]);
                     nextAvailable = true;
                 }
-                if (index < rectOfRects[3].Count)
+                if (index < polyOfpolys[3].Count)
                 {
-                    rects.Add(rectOfRects[3][index]);
+                    polys.Add(polyOfpolys[3][index]);
                     nextAvailable = true;
                 }
                 index++;
             }
 
-            return rects;
+            return polys;
         }
 
-        public Rectangle generateWPFRectange(Square square)
+        public Polygon generateWPFPolygon(Square square)
         {
             maxValue = zeroSquare.value * 1.001;
-
-            Rectangle rect = new Rectangle();
-            rect.DataContext = square.path;
-            rect.Stroke = Brushes.Black;
-            rect.StrokeThickness = 1 / Math.Pow(1.7, square.level);
+            
+            Polygon poly = new Polygon();
+            poly.DataContext = square.path;
+            poly.Stroke = Brushes.Black;
+            poly.StrokeThickness = 1 / Math.Pow(1.7, square.level);
             double intesity = 255 - ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
             Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
             Brush fillBrush = new SolidColorBrush(color);
             fillBrush.Opacity = 0.1;
-            rect.Fill = fillBrush;                        
-            rect.Width = 360 / Math.Pow(2, square.level);
-            rect.Height = 180 / Math.Pow(2, square.level); //we use 180 instead 360 to get squares (not rectangles)
+            poly.Fill = fillBrush;                    
+                
+            double width = 360 / Math.Pow(2, square.level);
+            double height = 180 / Math.Pow(2, square.level); //we use 180 instead 360 to get squares (not Polygons)
             double left = square.lng + 180;
             double top = square.lat + 90;
-            Canvas.SetLeft(rect, left);
-            Canvas.SetTop(rect, top);                        
-            return rect;
+            poly.Points = new PointCollection()
+            {
+                new Point(left,top), new Point(left + width,  top),
+                new Point(left + width, top + height), new Point(left, top + height)
+            };                                    
+            return poly;
         }
 
-        public List<Rectangle> generateRectangelsLayer(int level)
+        public List<Polygon> generatepolyangelsLayer(int level)
         {
-            List<Rectangle> layer = new List<Rectangle>();
+            List<Polygon> layer = new List<Polygon>();
             foreach (Square s in getLayer(zeroSquare, level))
-                layer.Add(generateWPFRectange(s));
+                layer.Add(generateWPFPolygon(s));
             return layer;
         }
 

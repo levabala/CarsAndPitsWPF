@@ -4,13 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarsAndPitsWPF"
-        mc:Ignorable="d"        
+        mc:Ignorable="d"    
+        WindowState="Maximized"
         Title="CarsAndPits Calculator">
     <Grid x:Name="MyGrid">
         <Border BorderBrush="Black" BorderThickness="1" Margin="3">
-            <Canvas x:Name="MainCanvas" Margin="0"/>
+            <Canvas x:Name="MainCanvas" Margin="0" ClipToBounds="True"/>
         </Border>
-        <Grid Margin="10,10,0,0" HorizontalAlignment="Left" Width="526" Height="159" VerticalAlignment="Top">
+        <Grid Margin="10,10,0,0" HorizontalAlignment="Left" Width="526" Height="159" VerticalAlignment="Top" Visibility="Hidden">
             <Slider x:Name="sliderValuesCount" Margin="10,10,0,98" Minimum="0" Maximum="1000000" Value="10000" IsSnapToTickEnabled="True" TickFrequency="1" HorizontalAlignment="Left" Width="189"/>
             <Label x:Name="ValuesCount" Content="{Binding ElementName=sliderValuesCount, Path=Value}" HorizontalAlignment="Left" Margin="287,5,0,0" VerticalAlignment="Top" Width="77"/>
             <Slider x:Name="sliderLevelsCount" Margin="10,41,0,67" Minimum="1" Maximum="30" Value="20" IsSnapToTickEnabled="True" TickFrequency="1" HorizontalAlignment="Left" Width="189"/>
