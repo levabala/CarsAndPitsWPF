@@ -4,13 +4,28 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarsAndPitsWPF"
-        mc:Ignorable="d"
-        WindowState="Maximized"
-        Title="MainWindow">
+        mc:Ignorable="d"        
+        Title="CarsAndPits Calculator">
     <Grid x:Name="MyGrid">
         <Border BorderBrush="Black" BorderThickness="1" Margin="3">
-            <Canvas x:Name="MainCanvas" Margin="0"> 
-            </Canvas>
+            <Canvas x:Name="MainCanvas" Margin="0"/>
         </Border>
+        <Grid Margin="10,10,0,0" HorizontalAlignment="Left" Width="526" Height="159" VerticalAlignment="Top">
+            <Slider x:Name="sliderValuesCount" Margin="10,10,0,98" Minimum="0" Maximum="1000000" Value="10000" IsSnapToTickEnabled="True" TickFrequency="1" HorizontalAlignment="Left" Width="189"/>
+            <Label x:Name="ValuesCount" Content="{Binding ElementName=sliderValuesCount, Path=Value}" HorizontalAlignment="Left" Margin="287,5,0,0" VerticalAlignment="Top" Width="77"/>
+            <Slider x:Name="sliderLevelsCount" Margin="10,41,0,67" Minimum="1" Maximum="30" Value="20" IsSnapToTickEnabled="True" TickFrequency="1" HorizontalAlignment="Left" Width="189"/>
+            <Label x:Name="LevelsCount" Content="{Binding ElementName=sliderLevelsCount, Path=Value}" HorizontalAlignment="Left" Margin="287,36,0,0" VerticalAlignment="Top" Width="77"/>
+            <Label x:Name="SquaresCount" Content="1000" HorizontalAlignment="Left" Margin="287,67,0,0" VerticalAlignment="Top" Width="77"/>
+            <Label x:Name="Ratio" Content="1" HorizontalAlignment="Left" Margin="287,98,0,0" VerticalAlignment="Top" Width="77"/>
+            <Button x:Name="buttonRecalculate" Content="Recalculate" HorizontalAlignment="Left" Margin="10,67,0,0" VerticalAlignment="Top" Width="186" Height="52"/>
+            <Label Content="Values count:" HorizontalAlignment="Left" Margin="199,5,0,0" VerticalAlignment="Top"/>
+            <Label Content="Levels count:" HorizontalAlignment="Left" Margin="199,36,0,0" VerticalAlignment="Top"/>
+            <Label Content="Squares count:" HorizontalAlignment="Left" Margin="199,67,0,0" VerticalAlignment="Top"/>
+            <Label Content="Ratio:" HorizontalAlignment="Left" Margin="199,98,0,0" VerticalAlignment="Top"/>
+            <Label Content="(More is better)" HorizontalAlignment="Left" Margin="369,98,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="MemoryUsage" Content="0" HorizontalAlignment="Left" Margin="287,124,0,0" VerticalAlignment="Top" Width="77"/>
+            <Label Content="Memory usage:" HorizontalAlignment="Left" Margin="199,124,0,0" VerticalAlignment="Top"/>
+            <Label x:Name="Accuracy" Content="(Accuracy: 0m)" HorizontalAlignment="Left" Margin="369,36,0,0" VerticalAlignment="Top"/>
+        </Grid>
     </Grid>
 </Window>

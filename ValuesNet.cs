@@ -12,19 +12,44 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Device.Location;
 
 namespace CarsAndPitsWPF
 {
     class ValuesNet
-    {
+    {        
         public Square zeroSquare = new Square(-90, -180, 0, 0);
-        public int maxDepth = 5;
+        public int maxDepth;
         public double maxValue = 200;
-        public int totalSquaresCount = 0;        
+        public int totalSquaresCount = 0;
+        public string accuracy = "0m";
 
         public ValuesNet(int maxDepth = 5)
         {
             this.maxDepth = maxDepth;
+
+            double latDist = 180d / Math.Pow(2, maxDepth - 1);
+            double lngDist = 360d / Math.Pow(2, maxDepth - 1);
+            double accuracy = new GeoCoordinate(0, 0).GetDistanceTo(new GeoCoordinate(latDist, lngDist));
+            string postFix = "m";            
+            int digit = (int)Math.Log10(accuracy);
+            if (digit >= 9)
+            {
+                postFix = "Gm";
+                accuracy /= 1000 / 1000 / 1000;
+            }
+            else if (digit >= 6)
+            {
+                postFix = "Mm";
+                accuracy /= 1000 / 1000;
+            }
+            else if (digit >= 3)
+            {
+                postFix = "km";
+                accuracy /= 1000;
+            }
+            string preFix = accuracy.ToString("n2");
+            this.accuracy = preFix + postFix;
         }
 
         public void putValue(double lat, double lng, double value)
