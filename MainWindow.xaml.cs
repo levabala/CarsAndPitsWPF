@@ -63,34 +63,6 @@ namespace CarsAndPitsWPF
 
             foreach (UIElement element in MainCanvas.Children)
                 element.RenderTransform = new MatrixTransform(globalM);
-
-            /*foreach (UIElement element in MainCanvas.Children)
-            {
-                Point p = e.MouseDevice.GetPosition(element);
-                Matrix m = element.RenderTransform.Value;
-                Matrix m2 = m;
-                m2.Translate(-m.OffsetX, -m.OffsetY);
-                if (e.Delta > 0)
-                    m2.ScaleAtPrepend(1.1, 1.1, p.X, p.Y);
-                else
-                    m2.ScaleAtPrepend(1 / 1.1, 1 / 1.1, p.X, p.Y);
-                m2.Translate(m.OffsetX, m.OffsetY);
-                element.RenderTransform = new MatrixTransform(m2);
-            }*/
-
-                /*foreach (UIElement ui in MainCanvas.Children)
-                {
-                    Matrix m = ui.RenderTransform.Value;
-                    if (e.Delta > 0)
-                        m.ScaleAt(1.1, 1.1, p.X, p.Y);
-                    else
-                        m.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
-
-                    MatrixTransform mTransform = new MatrixTransform(m);
-                    ui.RenderTransform = mTransform;
-                }*/
-
-                //MainCanvas.UpdateLayout();
         }
 
         private void SliderLevelsCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
