@@ -13,6 +13,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using Ookii.Dialogs.Wpf;
+using Microsoft.Win32;
+using System.IO;
 
 namespace CarsAndPitsWPF
 {
@@ -24,7 +26,7 @@ namespace CarsAndPitsWPF
         ValuesNet net;
         int currentLevel = 0;
         int deepness = 7;
-        int maxDepth = 20;
+        int maxDepth = 30;
         long valuesCount = 10000;
         Polygon zeroPolygon;
         Matrix globalM = new Matrix();
@@ -32,14 +34,28 @@ namespace CarsAndPitsWPF
         public MainWindow()
         {
             InitializeComponent();
-            Dictionary<SensorType, CPData> data = new Dictionary<SensorType, CPData>();
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();            
-            if (dialog.ShowDialog().Value)            
-                 data = CPData.fromDipolyory(dialog.SelectedPath);
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog().Value)
+            {
 
-            CPDataGeo cpGeo = new CPDataGeo(data[SensorType.ACCELEROMETER], data[SensorType.GPS]);
+                List<string> directories = new List<string>();
+                List<string> files = new List<string>();
+                foreach (string path in Directory.GetDirectories(dialog.SelectedPath))
+                {
+                    if (Directory.Exists(path)) directories.Add(path);
+                    else if (File.Exists(path)) files.Add(path);
+                }
 
-            init(cpGeo);            
+                List<CPDataGeo> data = new List<CPDataGeo>();
+                if (directories.Count > 0)
+                    foreach (string path in directories)
+                    {
+                        Dictionary<SensorType, CPData> CPdata = CPData.fromDirectory(path);
+                        data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
+                    }
+
+                init(data);
+            }              
 
             MyWindow.Loaded += MyWindow_Loaded;
         }
@@ -92,7 +108,7 @@ namespace CarsAndPitsWPF
                         Title = "Deepness " + deepness.ToString();
                         break;
                     }
-                    if (currentLevel >= net.maxDepth)
+                    if (currentLevel >= net.maxDepth-1)
                         break;
                     currentLevel++;
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
@@ -165,15 +181,16 @@ namespace CarsAndPitsWPF
             //setBaseScale();            
         }
 
-        private void init(CPDataGeo CPdata)
+        private void init(List<CPDataGeo> CPdata)
         {
             net = new ValuesNet(maxDepth);
-            foreach (DataTuplyaGeo tuplya in CPdata.geoData) {
-                double value = 0;
-                foreach (double v in tuplya.values)
-                    value += Math.Abs(v);
-                net.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
-            }
+            foreach (CPDataGeo data in CPdata)
+                foreach (DataTuplyaGeo tuplya in data.geoData) {
+                    double value = 0;
+                    foreach (double v in tuplya.values)
+                        value += Math.Abs(v);
+                    net.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
+                }
 
             SquaresCount.Content = net.totalSquaresCount.ToString();
             Ratio.Content = ((double)valuesCount / net.totalSquaresCount).ToString("0.####");
@@ -211,12 +228,13 @@ namespace CarsAndPitsWPF
 
         private void addpolysToCanvas(List<Polygon> polys)
         {
-            foreach (Polygon poly in polys)
-            {                                
-                poly.RenderTransform = new MatrixTransform(globalM);
-                MainCanvas.Children.Add(poly);
-                poly.MouseUp += poly_MouseUp;
-            }
+            if (polys.Count < 4000)
+                foreach (Polygon poly in polys)
+                {                                
+                    poly.RenderTransform = new MatrixTransform(globalM);
+                    MainCanvas.Children.Add(poly);
+                    poly.MouseUp += poly_MouseUp;
+                }
 
             Title = string.Format("Total values: {0}, Total Polygons: {1}, Level: {2}, Level Polygons: {3}",
                 valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), polys.Count.ToString());

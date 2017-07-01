@@ -111,7 +111,7 @@ namespace CarsAndPitsWPF
             Polygon poly = new Polygon();
             poly.DataContext = square.path;
             poly.Stroke = Brushes.Black;
-            poly.StrokeThickness = 1 / Math.Pow(1.7, square.level);
+            poly.StrokeThickness = 1 / Math.Pow(1.8, square.level);
             double intesity = 255 - ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
             Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
             Brush fillBrush = new SolidColorBrush(color);

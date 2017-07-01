@@ -40,11 +40,14 @@ namespace CarsAndPitsWPF
                 string line = "";
                 while ((line = sr.ReadLine()) != null)
                 {
-                    string[] str = line.Split('\t');
+                    String[] str = line.Split('\t');
                     int time = int.Parse(str[0]);
                     List<double> values = new List<double>();
                     for (int i = 1; i < str.Length; i++)
+                    {
+                        str[i] = str[i].Replace("\t", "").Replace(",", ".");
                         if (str[i].Length > 1) values.Add(double.Parse(str[i]));
+                    }
                     data.Add(new DataTuplya(time, values.ToArray()));
                 }
             }
@@ -52,10 +55,10 @@ namespace CarsAndPitsWPF
             this.data = data.ToArray();
         }    
         
-        public static Dictionary<SensorType, CPData> fromDipolyory(string path)
+        public static Dictionary<SensorType, CPData> fromDirectory(string path)
         {
             if (!Directory.Exists(path))
-                throw new DirectoryNotFoundException("No such dipolyory!");
+                throw new DirectoryNotFoundException("No such directory!");
 
             Dictionary<SensorType, CPData> data = new Dictionary<SensorType, CPData>();
             string[] files = Directory.GetFiles(path);
