@@ -211,19 +211,7 @@ namespace CarsAndPitsWPF
 
         private void fitToPolygon(Polygon poly)
         {
-            /*double ScaleRateX = MyGrid.RenderSize.Width / poly.Width;
-            double ScaleRateY = MyGrid.RenderSize.Height / poly.Height;
-            double ScaleRate = Math.Min(ScaleRateX, ScaleRateY) * 0.96;            
-            globalM = new Matrix();
-            double translateLeft = poly.Points[0].X;
-            double translateTop = poly.Points[0].Y;
-            globalM.Translate(-translateLeft, -translateTop);
-            globalM.Scale(ScaleRate, ScaleRate);
-
-            foreach (UIElement element in MainCanvas.Children)
-                element.RenderTransform = new MatrixTransform(globalM);
-
-            MainCanvas.UpdateLayout();*/
+            
         }
 
         private void addpolysToCanvas(List<Polygon> polys)
@@ -245,8 +233,8 @@ namespace CarsAndPitsWPF
             MainCanvas.Children.Clear();
             MainCanvas.Children.Add(zeroPolygon);
             Polygon poly = (Polygon)sender;
-            fitToPolygon(poly);
-            addpolysToCanvas(net.generateChildPolygons(net.getSquareByPath((int[])poly.DataContext), deepness));            
+            //fitToPolygon(poly);
+            addpolysToCanvas(net.generateChildPolygons(net.getSquareByPath((int[])poly.DataContext), 7));            
         }
     }
 }
