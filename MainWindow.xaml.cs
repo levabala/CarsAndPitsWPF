@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Ookii.Dialogs.Wpf;
 
 namespace CarsAndPitsWPF
 {
@@ -21,15 +22,24 @@ namespace CarsAndPitsWPF
     public partial class MainWindow : Window 
     {
         ValuesNet net;
-        int currentLevel = 3;
+        int currentLevel = 0;
         int deepness = 7;
         int maxDepth = 20;
-        long valuesCount = 10000;              
+        long valuesCount = 10000;
+        Polygon zeroPolygon;
+        Matrix globalM = new Matrix();
          
         public MainWindow()
         {
             InitializeComponent();
-            init();            
+            Dictionary<SensorType, CPData> data = new Dictionary<SensorType, CPData>();
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();            
+            if (dialog.ShowDialog().Value)            
+                 data = CPData.fromDipolyory(dialog.SelectedPath);
+
+            CPDataGeo cpGeo = new CPDataGeo(data[SensorType.ACCELEROMETER], data[SensorType.GPS]);
+
+            init(cpGeo);            
 
             MyWindow.Loaded += MyWindow_Loaded;
         }
@@ -40,6 +50,47 @@ namespace CarsAndPitsWPF
             sliderLevelsCount.ValueChanged += SliderLevelsCount_ValueChanged;
             KeyDown += MainWindow_KeyDown;
             buttonRecalculate.Click += ButtonRecalculate_Click;
+            MainCanvas.MouseWheel += MainCanvas_MouseWheel;
+        }
+
+        private void MainCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            Point p = e.MouseDevice.GetPosition(MainCanvas);
+            if (e.Delta > 0)
+                globalM.ScaleAt(1.1, 1.1, p.X, p.Y);
+            else
+                globalM.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
+
+            foreach (UIElement element in MainCanvas.Children)
+                element.RenderTransform = new MatrixTransform(globalM);
+
+            /*foreach (UIElement element in MainCanvas.Children)
+            {
+                Point p = e.MouseDevice.GetPosition(element);
+                Matrix m = element.RenderTransform.Value;
+                Matrix m2 = m;
+                m2.Translate(-m.OffsetX, -m.OffsetY);
+                if (e.Delta > 0)
+                    m2.ScaleAtPrepend(1.1, 1.1, p.X, p.Y);
+                else
+                    m2.ScaleAtPrepend(1 / 1.1, 1 / 1.1, p.X, p.Y);
+                m2.Translate(m.OffsetX, m.OffsetY);
+                element.RenderTransform = new MatrixTransform(m2);
+            }*/
+
+                /*foreach (UIElement ui in MainCanvas.Children)
+                {
+                    Matrix m = ui.RenderTransform.Value;
+                    if (e.Delta > 0)
+                        m.ScaleAt(1.1, 1.1, p.X, p.Y);
+                    else
+                        m.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
+
+                    MatrixTransform mTransform = new MatrixTransform(m);
+                    ui.RenderTransform = mTransform;
+                }*/
+
+                //MainCanvas.UpdateLayout();
         }
 
         private void SliderLevelsCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -71,10 +122,13 @@ namespace CarsAndPitsWPF
                     }
                     if (currentLevel >= net.maxDepth)
                         break;
-                    currentLevel++;                    
+                    currentLevel++;
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
+                    {
                         MainCanvas.Children.Clear();
-                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));                    
+                        MainCanvas.Children.Add(zeroPolygon);
+                    }
+                    addpolysToCanvas(net.generatepolyangelsLayer(currentLevel));                    
                     break;
                 case Key.Subtract:
                     if (Keyboard.IsKeyDown(Key.LeftCtrl))
@@ -86,13 +140,17 @@ namespace CarsAndPitsWPF
                     }
                     if (currentLevel < 2)
                         break;
-                    currentLevel--;                    
+                    currentLevel--;
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
+                    {
                         MainCanvas.Children.Clear();
-                    addRectsToCanvas(net.generateRectangelsLayer(currentLevel));                    
+                        MainCanvas.Children.Add(zeroPolygon);
+                    }
+                    addpolysToCanvas(net.generatepolyangelsLayer(currentLevel));                    
                     break;
                 case Key.C:
                     MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(zeroPolygon);
                     break;
                 case Key.B:
                     setBaseScale();
@@ -128,60 +186,77 @@ namespace CarsAndPitsWPF
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
 
-            //List<Rectangle> rects = new List<Rectangle>();            
-            //rects.AddRange(net.generateRectangelsLayer(3));
+            //List<Polygon> polys = new List<Polygon>();            
+            //polys.AddRange(net.generatepolyangelsLayer(3));
 
-            //addRectsToCanvas(rects);
+            //addpolysToCanvas(polys);
             //setBaseScale();            
         }
 
-        private void setBaseScale()
-        {            
-            Matrix m = new Matrix();            
-            m.Translate(0, 0);
-            m.Scale(4, 4);
-
-            MatrixTransform mTransform = new MatrixTransform(m);
-
-            MainCanvas.RenderTransform = mTransform;
-            MainCanvas.UpdateLayout();
-        }
-
-        private void fitToRectangle(Rectangle rect)
+        private void init(CPDataGeo CPdata)
         {
-            double ScaleRateX = MyGrid.RenderSize.Width / rect.Width;
-            double ScaleRateY = MyGrid.RenderSize.Height / rect.Height;
-            double ScaleRate = Math.Min(ScaleRateX, ScaleRateY) * 0.96;            
-            Matrix m = new Matrix();
-            double translateLeft = Canvas.GetLeft(rect);
-            double translateTop = Canvas.GetTop(rect);
-            m.Translate(-translateLeft, -translateTop);
-            m.Scale(ScaleRate, ScaleRate);
-
-            MatrixTransform mTransform = new MatrixTransform(m);
-
-            MainCanvas.RenderTransform = mTransform;
-            MainCanvas.UpdateLayout();            
-        }
-
-        private void addRectsToCanvas(List<Rectangle> rects)
-        {
-            foreach (Rectangle rect in rects)
-            {
-                MainCanvas.Children.Add(rect);
-                rect.MouseUp += Rect_MouseUp;
+            net = new ValuesNet(maxDepth);
+            foreach (DataTuplyaGeo tuplya in CPdata.geoData) {
+                double value = 0;
+                foreach (double v in tuplya.values)
+                    value += Math.Abs(v);
+                net.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
             }
 
-            Title = string.Format("Total values: {0}, Total rectangles: {1}, Level: {2}, Level rectangles: {3}",
-                valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), rects.Count.ToString());
+            SquaresCount.Content = net.totalSquaresCount.ToString();
+            Ratio.Content = ((double)valuesCount / net.totalSquaresCount).ToString("0.####");
+            MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
+            Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
+
+            zeroPolygon = net.generateWPFPolygon(net.zeroSquare);
+            MainCanvas.Children.Add(zeroPolygon);
+            setBaseScale();            
         }
 
-        private void Rect_MouseUp(object sender, MouseButtonEventArgs e)
+        private void setBaseScale()
+        {
+            globalM.Scale(4, 4);            
+            foreach (UIElement element in MainCanvas.Children)            
+                element.RenderTransform = new MatrixTransform(globalM);            
+        }
+
+        private void fitToPolygon(Polygon poly)
+        {
+            /*double ScaleRateX = MyGrid.RenderSize.Width / poly.Width;
+            double ScaleRateY = MyGrid.RenderSize.Height / poly.Height;
+            double ScaleRate = Math.Min(ScaleRateX, ScaleRateY) * 0.96;            
+            globalM = new Matrix();
+            double translateLeft = poly.Points[0].X;
+            double translateTop = poly.Points[0].Y;
+            globalM.Translate(-translateLeft, -translateTop);
+            globalM.Scale(ScaleRate, ScaleRate);
+
+            foreach (UIElement element in MainCanvas.Children)
+                element.RenderTransform = new MatrixTransform(globalM);
+
+            MainCanvas.UpdateLayout();*/
+        }
+
+        private void addpolysToCanvas(List<Polygon> polys)
+        {
+            foreach (Polygon poly in polys)
+            {                                
+                poly.RenderTransform = new MatrixTransform(globalM);
+                MainCanvas.Children.Add(poly);
+                poly.MouseUp += poly_MouseUp;
+            }
+
+            Title = string.Format("Total values: {0}, Total Polygons: {1}, Level: {2}, Level Polygons: {3}",
+                valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), polys.Count.ToString());
+        }
+
+        private void poly_MouseUp(object sender, MouseButtonEventArgs e)
         {
             MainCanvas.Children.Clear();
-            Rectangle rect = (Rectangle)sender;
-            fitToRectangle(rect);
-            addRectsToCanvas(net.generateChildRectangles(net.getSquareByPath((int[])rect.DataContext), deepness));            
+            MainCanvas.Children.Add(zeroPolygon);
+            Polygon poly = (Polygon)sender;
+            fitToPolygon(poly);
+            addpolysToCanvas(net.generateChildPolygons(net.getSquareByPath((int[])poly.DataContext), deepness));            
         }
     }
 }
