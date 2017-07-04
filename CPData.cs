@@ -32,25 +32,23 @@ namespace CarsAndPitsWPF
                 throw new FileFormatException("Filename isn't valid!");
 
             List<DataTuplya> data = new List<DataTuplya>();
-            using (StreamReader sr = new StreamReader(path))
-            {                                
-                startTime = long.Parse(sr.ReadLine().Split(' ')[2]);
-                deviceId = sr.ReadLine().Split(' ')[2];
+            string[] lines = File.ReadAllLines(path);
+            startTime = long.Parse(lines[0].Split(' ')[2]);
+            deviceId = lines[1].Split(' ')[2];
 
-                string line = "";
-                while ((line = sr.ReadLine()) != null)
+            for (int i = 2; i < lines.Length; i++)
+            {
+                String[] str = lines[i].Split('\t');
+                int time = int.Parse(str[0]);
+                List<double> values = new List<double>();
+                for (int ii = 1; ii < str.Length; ii++)
                 {
-                    String[] str = line.Split('\t');
-                    int time = int.Parse(str[0]);
-                    List<double> values = new List<double>();
-                    for (int i = 1; i < str.Length; i++)
-                    {
-                        str[i] = str[i].Replace("\t", "").Replace(",", ".");
-                        if (str[i].Length > 1) values.Add(double.Parse(str[i]));
-                    }
-                    data.Add(new DataTuplya(time, values.ToArray()));
+                    str[ii] = str[ii].Replace("\t", "").Replace(",", ".");
+                    if (str[ii].Length > 1) values.Add(double.Parse(str[ii]));
                 }
+                data.Add(new DataTuplya(time, values.ToArray()));
             }
+
             this.sensor = type;
             this.data = data.ToArray();
         }    

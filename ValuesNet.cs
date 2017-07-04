@@ -55,87 +55,110 @@ namespace CarsAndPitsWPF
         public void putValue(double lat, double lng, double value)
         {            
             putToSquareTree(lat, lng, value);
+            maxValue = zeroSquare.value * 1.001;
         }
 
-        public List<Polygon> generateChildPolygons(Square square, int deepness = -1)
+        /*public List<Square> generateChildSquares(Square square, int deepness = -1)
         {
             if (deepness == 0)
-                return new List<Polygon>();
+                return new List<Square>();
             deepness--;
 
-            List<Polygon>[] polyOfpolys = new List<Polygon>[] {
-                    new List<Polygon>(),new List<Polygon>(),new List<Polygon>(),new List<Polygon>()
+            List<Square>[] rectOfrects = new List<Square>[] {
+                    new List<Square>(),new List<Square>(),new List<Square>(),new List<Square>()
                 };
             for (int i = 0; i < 4; i++)
                 if (square.children[i] != null)
                 {
-                    polyOfpolys[i].Add(generateWPFPolygon(square.children[i]));
-                    polyOfpolys[i].AddRange(generateChildPolygons(square.children[i], deepness));
+                    rectOfrects[i].Add(generateWPFSquare(square.children[i]));
+                    rectOfrects[i].AddRange(generateChildSquares(square.children[i], deepness));
                 }
 
-            List<Polygon> polys = new List<Polygon>();
-            bool nextAvailable = (polyOfpolys[0].Count + polyOfpolys[1].Count + polyOfpolys[2].Count + polyOfpolys[3].Count) > 0;
+            List<Square> rects = new List<Square>();
+            bool nextAvailable = (rectOfrects[0].Count + rectOfrects[1].Count + rectOfrects[2].Count + rectOfrects[3].Count) > 0;
             int index = 0;
             while (nextAvailable) {
                 nextAvailable = false;              
-                if (index < polyOfpolys[0].Count)
+                if (index < rectOfrects[0].Count)
                 {
-                    polys.Add(polyOfpolys[0][index]);
+                    rects.Add(rectOfrects[0][index]);
                     nextAvailable = true;
                 }
-                if (index < polyOfpolys[1].Count)
+                if (index < rectOfrects[1].Count)
                 {
-                    polys.Add(polyOfpolys[1][index]);
+                    rects.Add(rectOfrects[1][index]);
                     nextAvailable = true;
                 }
-                if (index < polyOfpolys[2].Count)
+                if (index < rectOfrects[2].Count)
                 {
-                    polys.Add(polyOfpolys[2][index]);
+                    rects.Add(rectOfrects[2][index]);
                     nextAvailable = true;
                 }
-                if (index < polyOfpolys[3].Count)
+                if (index < rectOfrects[3].Count)
                 {
-                    polys.Add(polyOfpolys[3][index]);
+                    rects.Add(rectOfrects[3][index]);
                     nextAvailable = true;
                 }
                 index++;
             }
 
-            return polys;
+            return rects;
         }
 
-        public Polygon generateWPFPolygon(Square square)
+        public List<Square> generaterectangelsLayer(int level)
         {
-            maxValue = zeroSquare.value * 1.001;
-            
-            Polygon poly = new Polygon();
-            poly.DataContext = square.path;
-            poly.Stroke = Brushes.Black;
-            poly.StrokeThickness = 1 / Math.Pow(1.8, square.level);
-            double intesity = 255 - ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
-            Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
-            Brush fillBrush = new SolidColorBrush(color);
-            fillBrush.Opacity = 0.1;
-            poly.Fill = fillBrush;                    
-                
-            double width = 360 / Math.Pow(2, square.level);
-            double height = 180 / Math.Pow(2, square.level); //we use 180 instead 360 to get squares (not Polygons)
-            double left = square.lng + 180;
-            double top = square.lat + 90;
-            poly.Points = new PointCollection()
-            {
-                new Point(left,top), new Point(left + width,  top),
-                new Point(left + width, top + height), new Point(left, top + height)
-            };                                    
-            return poly;
-        }
-
-        public List<Polygon> generatepolyangelsLayer(int level)
-        {
-            List<Polygon> layer = new List<Polygon>();
+            List<Square> layer = new List<Square>();
             foreach (Square s in getLayer(zeroSquare, level))
-                layer.Add(generateWPFPolygon(s));
+                layer.Add(generateWPFSquare(s));
             return layer;
+        }*/
+
+        public List<Square> getChildSquares(Square square, int deepness = -1)
+        {
+            if (deepness == 0)
+                return new List<Square>();
+            deepness--;
+
+            List<Square>[] rectOfrects = new List<Square>[] {
+                    new List<Square>(),new List<Square>(),new List<Square>(),new List<Square>()
+                };
+            for (int i = 0; i < 4; i++)
+                if (square.children[i] != null)
+                {
+                    rectOfrects[i].Add(square.children[i]);
+                    rectOfrects[i].AddRange(getChildSquares(square.children[i], deepness));
+                }
+
+            List<Square> rects = new List<Square>();
+            bool nextAvailable = (rectOfrects[0].Count + rectOfrects[1].Count + rectOfrects[2].Count + rectOfrects[3].Count) > 0;
+            int index = 0;
+            while (nextAvailable)
+            {
+                nextAvailable = false;
+                if (index < rectOfrects[0].Count)
+                {
+                    rects.Add(rectOfrects[0][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[1].Count)
+                {
+                    rects.Add(rectOfrects[1][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[2].Count)
+                {
+                    rects.Add(rectOfrects[2][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[3].Count)
+                {
+                    rects.Add(rectOfrects[3][index]);
+                    nextAvailable = true;
+                }
+                index++;
+            }
+
+            return rects;
         }
 
         public List<Square> getLayer(Square startSquare, int level)
@@ -174,7 +197,9 @@ namespace CarsAndPitsWPF
             Square square = zeroSquare;
 
             int[] path = getPathToSquare(lat, lng);
-            square = getSquare(path);
+            foreach (int i in path)
+                if (square.children[i] == null) return square;
+                else square = square.children[i];
 
             return square;
         }
@@ -196,47 +221,231 @@ namespace CarsAndPitsWPF
                     totalSquaresCount++;
                 }
 
-                square = square.children[i];                
+                square = square.children[i];
             }                
 
             return square;
         }
 
-        public int[] getPathToSquare(double lat, double lng)
+        public Square getUpperParent(Square baseSquare, int level)
+        {
+            return getSquare(baseSquare.path.Take(level).ToArray());
+        }        
+
+        public Square getMostSquare(Square baseSquare, int[] preferMap, int maxLevel = -1)
+        {            
+            bool childAvailable = baseSquare.children[0] != null || baseSquare.children[1] != null || baseSquare.children[2] != null || baseSquare.children[3] != null;
+            Square square = baseSquare;
+            while (childAvailable && square.level >= maxLevel)
+            {                
+                foreach (int i in preferMap)
+                    if (square.children[i] != null)
+                    {
+                        square = square.children[i];
+                        childAvailable = true;
+                        break;
+                    }
+            }
+
+            return square;
+        }
+        
+        public List<Square> getSquaresInViewRect(Square baseSquare, Rect viewRect, int deepness = -1)
+        {            
+            if (deepness == -1) deepness = maxDepth;
+
+            List<Square> visibleSquares = new List<Square>();
+            Square square = baseSquare;
+            Point[] points = new Point[]
+            {
+                new Point(viewRect.X, viewRect.Y),
+                new Point(viewRect.X + viewRect.Width, viewRect.Y),
+                new Point(viewRect.X + viewRect.Width, viewRect.Y + viewRect.Height),
+                new Point(viewRect.X, viewRect.Y + viewRect.Height),
+            };
+            int[][] pathes = new int[][]
+            {
+                getPathToSquare(points[0].Y, points[0].X, baseSquare.level),
+                getPathToSquare(points[1].Y, points[1].X, baseSquare.level),
+                getPathToSquare(points[2].Y, points[2].X, baseSquare.level),
+                getPathToSquare(points[3].Y, points[3].X, baseSquare.level)
+            };
+
+            int depth = Math.Max(Math.Max(pathes[0].Length, pathes[1].Length), Math.Max(pathes[2].Length, pathes[3].Length));
+            if (depth > deepness) depth = deepness;
+
+            #region precalculated chooseMap
+            int[][][] chooseMap = new int[][][]
+            {
+                new int[][]
+                {
+                    new int[] {0,1,2,3},
+                    new int[] {1,3},
+                    new int[] {2,3},
+                    new int[] {3}
+                },
+                new int[][]
+                {
+                    new int[] {0,2},
+                    new int[] {0,1,2,3},
+                    new int[] {2},
+                    new int[] {2,3}
+                },
+                new int[][]
+                {
+                    new int[] {0,1},
+                    new int[] {1},
+                    new int[] {0,1,2,3},
+                    new int[] {1,3}                 
+                },
+                new int[][]
+                {
+                    new int[] {0},
+                    new int[] {0,1},
+                    new int[] {0,2},
+                    new int[] {0,1,2,3}
+                }
+            };
+            #endregion
+
+            visibleSquares.AddRange(
+                getSquaresInViewRect(square, depth, deepness, pathes, chooseMap, points)
+                );
+
+            /*for (int i = 0; i < depth; i++)
+            {
+                bool skip = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
+                //bool skip = (pathes[0][i] - pathes[1][i]) == 0 && (pathes[2][i] - pathes[3][i]) == 0;
+                if (skip)
+                {
+                    if (square == null) return visibleSquares;
+                    square = square.children[0];
+                    continue;
+                }
+
+                //Square[][] childrenToProcess = new Square[4][];
+                for (int ii = 0; ii < 4; ii++)
+                {
+                    int[] indexes = chooseMap[ii][getChildIndex(square.lat, square.lng, points[ii].Y, points[ii].X, square.level)];
+                    List<Square> children = getChildSquares(square, indexes);
+                    //childrenToProcess[ii] = children.ToArray();
+
+                    foreach (Square s in children)
+                        visibleSquares.AddRange(getChildSquares(s, deepness - i - 1));
+                }
+            }      */                 
+
+            return visibleSquares;
+        }
+
+        private List<Square> getSquaresInViewRect(Square square, int depth, int deepness, int[][] pathes, int[][][] chooseMap, Point[] points)
+        {
+            List<Square> visibleSquares = new List<Square>();
+            for (int i = square.level; i < depth; i++)
+            {
+                bool skip = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
+                //bool skip = (pathes[0][i] - pathes[1][i]) == 0 && (pathes[2][i] - pathes[3][i]) == 0;
+                if (skip)
+                {
+                    if (square == null) return visibleSquares;
+                    foreach (Square s in square.children)
+                        if (s != null)
+                            visibleSquares.AddRange(getSquaresInViewRect(s, depth, deepness, pathes, chooseMap, points));
+                    break;
+                }
+
+                visibleSquares.Add(square);
+
+                //Square[][] childrenToProcess = new Square[4][];
+                for (int ii = 0; ii < 4; ii++)
+                {
+                    int[] indexes = chooseMap[ii][getChildIndex(square.lat, square.lng, points[ii].Y, points[ii].X, square.level)];
+                    List<Square> children = getChildSquares(square, indexes);
+                    //childrenToProcess[ii] = children.ToArray();
+
+                    foreach (Square s in children)
+                        visibleSquares.AddRange(getChildSquares(s, deepness - i - 1));
+                }
+            }
+
+            return visibleSquares;
+        }
+
+        public int[] getPathToSquare(double lat, double lng, int startLevel = 0)
         {
             int[] path = new int[maxDepth-1];            
-            double squareLat = -90;
-            double squareLng = -180;
-            for (int level = 0; level < maxDepth-1; level++)
-            {                
-                double sHeight = 180 / Math.Pow(2, level);
-                double sWidth = 360 / Math.Pow(2, level); //squareWidth
-                double centerLat = squareLat + sHeight / 2;
-                double centerLng = squareLng + sWidth / 2;
-
-                //can I replace it??
-                int index = 0;
-                if (lat > centerLat)
-                {
-                    if (lng > centerLng)
-                    {
-                        index = 3;
-                        squareLng = centerLng;
-                    }
-                    else index = 2;                                            
-                    squareLat = centerLat;
-                }
-                else if (lng > centerLng)
-                {
-                    index = 1;
-                    squareLng = centerLng;
-                }                
-
-                path[level] = index;
-            }
+            double squareLat = -90 / Math.Pow(2, startLevel);
+            double squareLng = -180 / Math.Pow(2, startLevel);
+            for (int level = startLevel; level < maxDepth - 1; level++)
+                path[level] = getChildIndex(ref squareLat, ref squareLng, lat, lng, level);
 
             return path;
         }     
+
+        private int getChildIndex(ref double squareLat, ref double squareLng, double lat, double lng, int level)
+        {
+            double sHeight = 180 / Math.Pow(2, level);
+            double sWidth = 360 / Math.Pow(2, level); //squareWidth
+            double centerLat = squareLat + sHeight / 2;
+            double centerLng = squareLng + sWidth / 2;
+
+            //can I replace it??
+            int index = 0;
+            if (lat > centerLat)
+            {
+                if (lng > centerLng)
+                {
+                    index = 3;
+                    squareLng = centerLng;
+                }
+                else index = 2;
+                squareLat = centerLat;
+            }
+            else if (lng > centerLng)
+            {
+                index = 1;
+                squareLng = centerLng;
+            }
+
+            return index;
+        }
+
+        private int getChildIndex(double squareLat, double squareLng, double lat, double lng, int level)
+        {
+            double sHeight = 180 / Math.Pow(2, level);
+            double sWidth = 360 / Math.Pow(2, level); //squareWidth
+            double centerLat = squareLat + sHeight / 2;
+            double centerLng = squareLng + sWidth / 2;
+
+            //can I replace it??
+            int index = 0;
+            if (lat > centerLat)
+            {
+                if (lng > centerLng)
+                {
+                    index = 3;
+                    squareLng = centerLng;
+                }
+                else index = 2;
+                squareLat = centerLat;
+            }
+            else if (lng > centerLng)
+            {
+                index = 1;
+                squareLng = centerLng;
+            }
+
+            return index;
+        }
+
+        private List<Square> getChildSquares(Square baseSquare, int[] indexes)
+        {            
+            List<Square> children = new List<Square>();
+            foreach (int index in indexes)
+                if (baseSquare.children[index] != null) children.Add(baseSquare.children[index]);
+
+            return children;
+        }
         
         public Square getSquareByPath(int[] path)
         {

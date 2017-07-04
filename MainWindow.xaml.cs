@@ -27,8 +27,7 @@ namespace CarsAndPitsWPF
         int currentLevel = 0;
         int deepness = 7;
         int maxDepth = 30;
-        long valuesCount = 10000;
-        Polygon zeroPolygon;
+        long valuesCount = 10000;        
         Matrix globalM = new Matrix();
          
         public MainWindow()
@@ -71,14 +70,7 @@ namespace CarsAndPitsWPF
 
         private void MainCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            Point p = e.MouseDevice.GetPosition(MainCanvas);
-            if (e.Delta > 0)
-                globalM.ScaleAt(1.1, 1.1, p.X, p.Y);
-            else
-                globalM.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
-
-            foreach (UIElement element in MainCanvas.Children)
-                element.RenderTransform = new MatrixTransform(globalM);
+            
         }
 
         private void SliderLevelsCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -101,7 +93,7 @@ namespace CarsAndPitsWPF
             switch (e.Key)
             {
                 case Key.Add:
-                    if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                    /*if (Keyboard.IsKeyDown(Key.LeftCtrl))
                     {
                         deepness++;
                         if (deepness > 15) deepness = 15;
@@ -114,12 +106,12 @@ namespace CarsAndPitsWPF
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
                     {
                         MainCanvas.Children.Clear();
-                        MainCanvas.Children.Add(zeroPolygon);
+                        MainCanvas.Children.Add(zerorectgon);
                     }
-                    addpolysToCanvas(net.generatepolyangelsLayer(currentLevel));                    
+                    addrectsToCanvas(net.generaterectangelsLayer(currentLevel));     */               
                     break;
                 case Key.Subtract:
-                    if (Keyboard.IsKeyDown(Key.LeftCtrl))
+                    /*if (Keyboard.IsKeyDown(Key.LeftCtrl))
                     {
                         deepness--;
                         if (deepness < 1) deepness = 1;
@@ -132,16 +124,16 @@ namespace CarsAndPitsWPF
                     if (!Keyboard.IsKeyDown(Key.LeftShift))
                     {
                         MainCanvas.Children.Clear();
-                        MainCanvas.Children.Add(zeroPolygon);
+                        MainCanvas.Children.Add(zerorectgon);
                     }
-                    addpolysToCanvas(net.generatepolyangelsLayer(currentLevel));                    
+                    addrectsToCanvas(net.generaterectangelsLayer(currentLevel));     */               
                     break;
                 case Key.C:
                     MainCanvas.Children.Clear();
-                    MainCanvas.Children.Add(zeroPolygon);
+                    //MainCanvas.Children.Add(zerorectgon);
                     break;
                 case Key.B:
-                    setBaseScale();
+                    //setBaseScale();
                     break;
                 case Key.Escape:
                     Application.Current.Shutdown();
@@ -174,10 +166,10 @@ namespace CarsAndPitsWPF
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
 
-            //List<Polygon> polys = new List<Polygon>();            
-            //polys.AddRange(net.generatepolyangelsLayer(3));
+            //List<rectgon> rects = new List<rectgon>();            
+            //rects.AddRange(net.generaterectangelsLayer(3));
 
-            //addpolysToCanvas(polys);
+            //addrectsToCanvas(rects);
             //setBaseScale();            
         }
 
@@ -197,44 +189,52 @@ namespace CarsAndPitsWPF
             MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
-            zeroPolygon = net.generateWPFPolygon(net.zeroSquare);
-            MainCanvas.Children.Add(zeroPolygon);
-            setBaseScale();            
+            ValuesNetElement vnet = new ValuesNetElement(MainCanvas, net);
+            vnet.MouseWheel += delegate
+            {
+                Title = vnet.visibleSquaresCount.ToString();
+            };            
+
+            MainCanvas.Children.Add(vnet);            
+
+            /*zerorectgon = net.generateWPFrectgon(net.zeroSquare);
+            MainCanvas.Children.Add(zerorectgon);
+            setBaseScale();  */          
         }
 
-        private void setBaseScale()
+        /*private void setBaseScale()
         {
             globalM.Scale(4, 4);            
             foreach (UIElement element in MainCanvas.Children)            
                 element.RenderTransform = new MatrixTransform(globalM);            
         }
 
-        private void fitToPolygon(Polygon poly)
+        private void fitTorectgon(rectgon rect)
         {
             
         }
 
-        private void addpolysToCanvas(List<Polygon> polys)
+        private void addrectsToCanvas(List<rectgon> rects)
         {
-            if (polys.Count < 4000)
-                foreach (Polygon poly in polys)
+            if (rects.Count < 4000)
+                foreach (rectgon rect in rects)
                 {                                
-                    poly.RenderTransform = new MatrixTransform(globalM);
-                    MainCanvas.Children.Add(poly);
-                    poly.MouseUp += poly_MouseUp;
+                    rect.RenderTransform = new MatrixTransform(globalM);
+                    MainCanvas.Children.Add(rect);
+                    rect.MouseUp += rect_MouseUp;
                 }
 
-            Title = string.Format("Total values: {0}, Total Polygons: {1}, Level: {2}, Level Polygons: {3}",
-                valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), polys.Count.ToString());
-        }
+            Title = string.Format("Total values: {0}, Total rectgons: {1}, Level: {2}, Level rectgons: {3}",
+                valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), rects.Count.ToString());
+        }*/
 
-        private void poly_MouseUp(object sender, MouseButtonEventArgs e)
+        /*private void rect_MouseUp(object sender, MouseButtonEventArgs e)
         {
             MainCanvas.Children.Clear();
-            MainCanvas.Children.Add(zeroPolygon);
-            Polygon poly = (Polygon)sender;
-            //fitToPolygon(poly);
-            addpolysToCanvas(net.generateChildPolygons(net.getSquareByPath((int[])poly.DataContext), 7));            
-        }
+            MainCanvas.Children.Add(zerorectgon);
+            rectgon rect = (rectgon)sender;
+            //fitTorectgon(rect);
+            addrectsToCanvas(net.generateChildrectgons(net.getSquareByPath((int[])rect.DataContext), 7));            
+        }*/
     }
 }
