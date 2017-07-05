@@ -15,6 +15,8 @@ using System.Windows.Shapes;
 using Ookii.Dialogs.Wpf;
 using Microsoft.Win32;
 using System.IO;
+using System.Windows.Threading;
+using System.ComponentModel;
 
 namespace CarsAndPitsWPF
 {
@@ -36,7 +38,7 @@ namespace CarsAndPitsWPF
 
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            KeyDown += MainWindow_KeyDown;
+            KeyDown += MainWindow_KeyDown;            
             buttonSelectFolder.Click += delegate
             {
                 net = new ValuesNet(maxDepth);
@@ -159,48 +161,110 @@ namespace CarsAndPitsWPF
             List<CPDataGeo> data = new List<CPDataGeo>();
 
             Dictionary<SensorType, CPData> CPdata;
-            foreach (string path in directories)
+
+            updateActionProgress("Files reading", 0);
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += (sender, e) =>
             {
-                CPdata = CPData.fromDirectory(path);
+                double i = 0;
+                foreach (string path in directories)
+                {
+                    CPdata = CPData.fromDirectory(path);
+                    if (CPdata.ContainsKey(SensorType.ACCELEROMETER) && CPdata.ContainsKey(SensorType.GPS))
+                        data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
+                    i++;
+
+                    bw.ReportProgress((int)(i / directories.Count * 100));
+                }
+
+                CPdata = CPData.fromDirectory(folder);
                 if (CPdata.ContainsKey(SensorType.ACCELEROMETER) && CPdata.ContainsKey(SensorType.GPS))
                     data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
-            }
-
-            CPdata = CPData.fromDirectory(folder);            
-            if (CPdata.ContainsKey(SensorType.ACCELEROMETER) && CPdata.ContainsKey(SensorType.GPS))
-                data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
-
-            init(data);
+            };
+            bw.ProgressChanged += (o,args) => {
+                updateActionProgress("Files reading", args.ProgressPercentage);
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                updateActionProgress("Files reading", 100);
+                init(data);
+            };
+            bw.RunWorkerAsync();
         }
 
         private void init(List<CPDataGeo> CPdata)
         {
             net = new ValuesNet(maxDepth);
-            foreach (CPDataGeo data in CPdata)
-                foreach (DataTuplyaGeo tuplya in data.geoData) {
-                    double value = 0;
-                    foreach (double v in tuplya.values)
-                        value += Math.Abs(v);
-                    net.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
-                }
+            updateActionProgress("ValuesNet filling", 0);            
 
-            SquaresCount.Content = net.totalSquaresCount.ToString();
-            Ratio.Content = ((double)valuesCount / net.totalSquaresCount).ToString("0.####");
-            MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
-            Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
-
-            vnet = new ValuesNetElement(MainCanvas, net);
-            vnet.MouseMove += delegate
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += (sender, e) =>
             {
-                Title = String.Format("X: {0}  Y: {1}", vnet.coordinates.X, vnet.coordinates.Y);
-            };
-            vnet.MouseWheel += delegate
-            {
-                Title = vnet.visibleSquaresCount.ToString();
-            };
+                double counter = 0;
+                double totalCount = 0;
+                foreach (CPDataGeo data in CPdata)
+                    totalCount += data.geoData.Length;
 
-            MainCanvas.Children.Clear();
-            MainCanvas.Children.Add(vnet);             
-        }        
-    }
+                foreach (CPDataGeo data in CPdata)
+                {
+                    int part = 0;
+                    int triggerPart = data.geoData.Length / 100;
+                    foreach (DataTuplyaGeo tuplya in data.geoData)
+                    {
+                        double value = 0;
+                        foreach (double v in tuplya.values)
+                            value += Math.Abs(v);
+                        net.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
+                        counter++;
+                        part++;
+
+                        if (part >= triggerPart)
+                        {
+                            part = 0;
+                            bw.ReportProgress((int)(counter / totalCount * 100));
+                        }
+                    }                    
+                }    
+            };
+            bw.ProgressChanged += (o, args) => {
+                updateActionProgress("ValuesNet filling", args.ProgressPercentage);
+            };
+            bw.RunWorkerCompleted += delegate
+            {
+                updateActionProgress("ValuesNet filling", 100);
+
+                SquaresCount.Content = net.totalSquaresCount.ToString();
+                Ratio.Content = ((double)valuesCount / net.totalSquaresCount).ToString("0.####");
+                MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
+                Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
+
+                vnet = new ValuesNetElement(MainCanvas, net);
+                vnet.MouseMove += delegate
+                {
+                    Title = String.Format("X: {0}  Y: {1}", vnet.coordinates.X, vnet.coordinates.Y);
+                };
+                vnet.MouseWheel += delegate
+                {
+                    Title = vnet.visibleSquaresCount.ToString();
+                };
+
+                MainCanvas.Children.Clear();
+                MainCanvas.Children.Add(vnet);
+            };
+            bw.RunWorkerAsync();                       
+        }
+
+        public void updateActionProgress(string title, double progress)
+        {
+            progressBarFileLoading.Value = progress / 100;
+            Title = title + "(" + (progress).ToString("n0") + "%)";
+
+            //MyWindow.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);            
+            //progressBarFileLoading.Dispatcher.Invoke(() => progressBarFileLoading.Value = progress / 100, DispatcherPriority.Background);
+            //progressBarFileLoading.Dispatcher.Invoke(DispatcherPriority.Render, EmptyDelegate);
+        }
+        private static Action EmptyDelegate = delegate () { };
+    }    
 }

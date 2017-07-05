@@ -48,9 +48,8 @@ namespace CarsAndPitsWPF
             Point mouse = getInvertedPoint(e.GetPosition(canvas));
             coordinates = mouse;
             if (e.LeftButton == MouseButtonState.Pressed)
-            {                
-                Vector delta = Point.Subtract(mouse, pressedMouse); // delta from old mouse to current mouse
-                matrix.Translate(delta.X, delta.Y);                
+            {                                
+                matrix.Translate(mouse.X - pressedMouse.X, mouse.Y - pressedMouse.Y);                
                 e.Handled = true;
 
                 InvalidateVisual();
