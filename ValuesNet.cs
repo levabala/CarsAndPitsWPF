@@ -111,55 +111,7 @@ namespace CarsAndPitsWPF
             foreach (Square s in getLayer(zeroSquare, level))
                 layer.Add(generateWPFSquare(s));
             return layer;
-        }*/
-
-        public List<Square> getChildSquares(Square square, int deepness = -1)
-        {
-            if (deepness == 0)
-                return new List<Square>();
-            deepness--;
-
-            List<Square>[] rectOfrects = new List<Square>[] {
-                    new List<Square>(),new List<Square>(),new List<Square>(),new List<Square>()
-                };
-            for (int i = 0; i < 4; i++)
-                if (square.children[i] != null)
-                {
-                    rectOfrects[i].Add(square.children[i]);
-                    rectOfrects[i].AddRange(getChildSquares(square.children[i], deepness));
-                }
-
-            List<Square> rects = new List<Square>();
-            bool nextAvailable = (rectOfrects[0].Count + rectOfrects[1].Count + rectOfrects[2].Count + rectOfrects[3].Count) > 0;
-            int index = 0;
-            while (nextAvailable)
-            {
-                nextAvailable = false;
-                if (index < rectOfrects[0].Count)
-                {
-                    rects.Add(rectOfrects[0][index]);
-                    nextAvailable = true;
-                }
-                if (index < rectOfrects[1].Count)
-                {
-                    rects.Add(rectOfrects[1][index]);
-                    nextAvailable = true;
-                }
-                if (index < rectOfrects[2].Count)
-                {
-                    rects.Add(rectOfrects[2][index]);
-                    nextAvailable = true;
-                }
-                if (index < rectOfrects[3].Count)
-                {
-                    rects.Add(rectOfrects[3][index]);
-                    nextAvailable = true;
-                }
-                index++;
-            }
-
-            return rects;
-        }
+        }*/        
 
         public List<Square> getLayer(Square startSquare, int level)
         {
@@ -344,26 +296,8 @@ namespace CarsAndPitsWPF
                     break;
                 }
             }
-
             visibleSquares.Add(lowermostCommonSquare);
-            visibleSquares.AddRange(getChildSquares(lowermostCommonSquare, 8));
-
-            /*int i = 1;
-            bool commonSquare = (pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i]);
-            while (commonSquare && i < depth)
-            {
-                commonSquare = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
-                for (int p = 0; p < pathes.Length; p++)
-                {
-
-                }
-                
-                square = square.children[pathes[0][i]];
-                visibleSquares.Add(square);                
-                i++;
-            }*/
-
-                    //visibleSquares = getSquaresInViewRect(square, depth, pathes, chooseMap, points);            
+            visibleSquares.AddRange(getChildSquares(lowermostCommonSquare, 10));
 
             return visibleSquares;
         }        
@@ -505,7 +439,105 @@ namespace CarsAndPitsWPF
             return 180 / Math.Pow(2, level);
         }
 
-        private List<Square> getChildSquares(Square baseSquare, int[] indexes)
+        public List<Square> getChildSquares(Square square, int deepness = -1)
+        {
+            if (deepness == 0)
+                return new List<Square>();
+            deepness--;
+
+            List<Square>[] rectOfrects = new List<Square>[] {
+                    new List<Square>(),new List<Square>(),new List<Square>(),new List<Square>()
+                };
+            for (int i = 0; i < 4; i++)
+                if (square.children[i] != null)
+                {
+                    rectOfrects[i].Add(square.children[i]);
+                    rectOfrects[i].AddRange(getChildSquares(square.children[i], deepness));
+                }
+
+            List<Square> rects = new List<Square>();
+            bool nextAvailable = (rectOfrects[0].Count + rectOfrects[1].Count + rectOfrects[2].Count + rectOfrects[3].Count) > 0;
+            int index = 0;
+            while (nextAvailable)
+            {
+                nextAvailable = false;
+                if (index < rectOfrects[0].Count)
+                {
+                    rects.Add(rectOfrects[0][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[1].Count)
+                {
+                    rects.Add(rectOfrects[1][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[2].Count)
+                {
+                    rects.Add(rectOfrects[2][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[3].Count)
+                {
+                    rects.Add(rectOfrects[3][index]);
+                    nextAvailable = true;
+                }
+                index++;
+            }
+
+            return rects;
+        }
+
+        /*public List<Square> getChildSquares(Square square, int maxSquares, int deepness = -1)
+        {
+            if (deepness == 0)
+                return new List<Square>();
+            deepness--;            
+
+            List<Square>[] rectOfrects = new List<Square>[] {
+                    new List<Square>(),new List<Square>(),new List<Square>(),new List<Square>()
+                };
+            for (int i = 0; i < 4; i++)
+                if (square.children[i] != null)
+                {
+                    if (squaresLeft <= 0) break;
+                    rectOfrects[i].Add(square.children[i]);
+                    squaresLeft--;
+                    rectOfrects[i].AddRange(getChildSquares(square.children[i], ref squaresLeft, deepness));
+                }
+
+            List<Square> rects = new List<Square>();
+            bool nextAvailable = (rectOfrects[0].Count + rectOfrects[1].Count + rectOfrects[2].Count + rectOfrects[3].Count) > 0;
+            int index = 0;
+            while (nextAvailable)
+            {
+                nextAvailable = false;
+                if (index < rectOfrects[0].Count)
+                {
+                    rects.Add(rectOfrects[0][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[1].Count)
+                {
+                    rects.Add(rectOfrects[1][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[2].Count)
+                {
+                    rects.Add(rectOfrects[2][index]);
+                    nextAvailable = true;
+                }
+                if (index < rectOfrects[3].Count)
+                {
+                    rects.Add(rectOfrects[3][index]);
+                    nextAvailable = true;
+                }
+                index++;
+            }
+
+            return rects;
+        }*/
+
+        public List<Square> getChildSquares(Square baseSquare, int[] indexes)
         {            
             List<Square> children = new List<Square>();
             foreach (int index in indexes)
