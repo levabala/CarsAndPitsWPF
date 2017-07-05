@@ -4,12 +4,14 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CarsAndPitsWPF"
+        xmlns:gmaps="clr-namespace:GMap.NET.WindowsPresentation;assembly=GMap.NET.WindowsPresentation"
         mc:Ignorable="d"    
         WindowState="Maximized"
         Title="CarsAndPits Calculator">
     <Grid x:Name="MyGrid">
+        <gmaps:GMapControl x:Name="mapView"/>
         <Border BorderBrush="Black" BorderThickness="1" Margin="3">
-            <Canvas x:Name="MainCanvas" Margin="0" ClipToBounds="True" Background="White">
+            <Canvas x:Name="MainCanvas" Margin="0" ClipToBounds="True" Background="Transparent" IsHitTestVisible="False">
             </Canvas>
         </Border>
         <Grid Margin="10,10,0,0" HorizontalAlignment="Left" Width="526" Height="159" VerticalAlignment="Top" Visibility="Hidden">
