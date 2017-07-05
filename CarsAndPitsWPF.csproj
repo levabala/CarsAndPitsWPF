@@ -63,6 +63,7 @@
     <Compile Include="CPDataGeo.cs" />
     <Compile Include="HSLColor.cs" />
     <Compile Include="CPData.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="ValuesNet.cs" />
     <Compile Include="ValuesNetElement.cs" />
     <Page Include="MainWindow.xaml">

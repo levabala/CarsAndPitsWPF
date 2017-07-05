@@ -16,15 +16,16 @@ namespace CarsAndPitsWPF
         Size size;
         ValuesNet net = null;
         Rect viewRect;
-        List<Rect> rectsCache = new List<Rect>();
+        SquareRect[] sRectsCache = new SquareRect[0];
         Square baseViewSquare;
         List<int> levelsToRender;
         int maxRectsCount = 5000;
         Matrix matrix;
         MatrixTransform transform;
-        Point pressedMouse;
+        Point pressedMouse;        
         Canvas canvas;
         public int visibleSquaresCount = 0;
+        public Point coordinates;
 
         public ValuesNetElement(Canvas canvas, ValuesNet net)
         {
@@ -38,9 +39,9 @@ namespace CarsAndPitsWPF
             matrix = new Matrix();
             matrix.Scale(4, 4);
             matrix.Translate(180, 90);
-            transform = new MatrixTransform(matrix);
+            //transform = new MatrixTransform(matrix);
 
-            RenderTransform = transform;
+            //RenderTransform = transform;
 
             SizeChanged += ValuesNetElement_SizeChanged;
             canvas.MouseWheel += ValuesNetElement_MouseWheel;
@@ -51,7 +52,7 @@ namespace CarsAndPitsWPF
 
         private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            InvalidateVisual();
+            Invalidate();
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -61,15 +62,18 @@ namespace CarsAndPitsWPF
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
+            Point mouse = getInvertedPoint(e.GetPosition(canvas));
+            coordinates = mouse;
             if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Point mouse = getInvertedPoint(e.GetPosition(canvas));
+            {                
                 Vector delta = Point.Subtract(mouse, pressedMouse); // delta from old mouse to current mouse
-                matrix.Translate(delta.X, delta.Y);
-                transform = new MatrixTransform(matrix);
+                matrix.Translate(delta.X, delta.Y);                
+                //transform = new MatrixTransform(matrix);
 
-                RenderTransform = transform;
+                //RenderTransform = transform;
                 e.Handled = true;
+
+                InvalidateVisual();
             }
         }
 
@@ -80,17 +84,19 @@ namespace CarsAndPitsWPF
             return m.Transform(p);
         }
 
-        private void ValuesNetElement_MouseWheel(object sender, System.Windows.Input.MouseWheelEventArgs e)
+        private void ValuesNetElement_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             Point p = e.MouseDevice.GetPosition(canvas);
+            //double reduceCoeff = matrix.M11 * matrix.M11 / 50000 / 50000;
+            //if (reduceCoeff < 1) reduceCoeff = 1;
+
             if (e.Delta > 0)
                 matrix.ScaleAt(1.1, 1.1, p.X, p.Y);
             else
                 matrix.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
 
-            RenderTransform = new MatrixTransform(matrix);
+            //RenderTransform = new MatrixTransform(matrix);
 
-            //getLayersToRenderList();
             InvalidateVisual();
         }
         
@@ -101,33 +107,38 @@ namespace CarsAndPitsWPF
             InvalidateVisual();
         }
 
+        public void Invalidate()
+        {
+            
+        }
+
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-            drawRect(new SquareRect(net.zeroSquare, net.maxValue), drawingContext);
-
-            /*foreach (Square square in net.getChildSquares(net.zeroSquare, 6))
-                drawRect(new SquareRect(square, net.maxValue), drawingContext);*/
-
-            SquareRect[] sRects = generateSRects(getVisibleSquares().ToArray());
-            foreach (SquareRect sRect in sRects)
-                drawRect(sRect, drawingContext);
 
             Point[] edges = getViewEdges();
-            //drawingContext.DrawEllipse(Brushes.Green, null, edges[0], 10, 10);
-            //drawingContext.DrawEllipse(Brushes.Green, null, edges[1], 10, 10);
+            bool changed = net.findSquaresInViewRect(net.zeroSquare, new Rect(edges[0], edges[1]));            
 
-            drawingContext.DrawRectangle(Brushes.Transparent, new Pen(Brushes.LightBlue, 1), new Rect(0, 0, canvas.ActualWidth, canvas.ActualHeight));
-        }
+            Square[] squaresToRender = net.getCachedSquares();
+            if (squaresToRender == null)
+            {
+                drawRect(new SquareRect(net.zeroSquare, net.maxValue), drawingContext);
+                foreach (Square square in net.getChildSquares(net.zeroSquare, 2))
+                    drawRect(new SquareRect(square, net.maxValue), drawingContext);
+                return;
+            }
+
+            if (changed)
+                sRectsCache = generateSRects(squaresToRender);
+
+            visibleSquaresCount = squaresToRender.Length;                        
+            foreach (SquareRect sRect in sRectsCache)
+                drawRect(sRect, drawingContext);                                    
+        }        
 
         private SquareRect[] generateSRects(Square[] squares)
         {
-            SquareRect[] sRects = new SquareRect[squares.Length];
-            /*Parallel.For(0, squares.Length, index =>
-            {
-                sRects[index] = new SquareRect(squares[index], net.maxValue);
-            });*/
-            
+            SquareRect[] sRects = new SquareRect[squares.Length];           
 
             for (int i = 0; i < squares.Length; i++)
                 sRects[i] = new SquareRect(squares[i], net.maxValue);
@@ -136,33 +147,11 @@ namespace CarsAndPitsWPF
         }
 
         private void drawRect(SquareRect squareRect, DrawingContext context)
-        {                                                                                                  
-            context.DrawRectangle(squareRect.brush, squareRect.pen, squareRect.rect);
-        }   
-        
-        private void getLayersToRenderList()
         {
-            Matrix invMatrix = matrix;
-            invMatrix.Invert();
-            Point zeroPoint = invMatrix.Transform(new Point(0, 0));
-            Point endPoint = invMatrix.Transform(new Point(canvas.ActualWidth, canvas.ActualHeight));            
-
-            //Square baseSquare = net.getSquare(zeroPoint.Y, zeroPoint.X);
-            //Square upperSquare = net.getUpperParent(baseSquare, );
-
-            List<Square> visibleSquares = net.getSquaresInViewRect(net.zeroSquare, new Rect(zeroPoint, endPoint));            
-            visibleSquaresCount = visibleSquares.Count;
-        }             
-
-        private List<Square> getVisibleSquares()
-        {
-            Point[] edges = getViewEdges();
-
-            List<Square> visibleSquares = net.getSquaresInViewRect(net.zeroSquare, new Rect(edges[0], edges[1]));
-            visibleSquaresCount = visibleSquares.Count;
-
-            return visibleSquares;
-        }
+            Rect rect = squareRect.rect;
+            rect.Transform(matrix);
+            context.DrawRectangle(squareRect.brush, squareRect.pen, rect);
+        }                             
 
         private Point[] getViewEdges()
         {
@@ -190,12 +179,12 @@ namespace CarsAndPitsWPF
             double top = square.lat;// + 90;
             rect = new Rect(left, top, width, height);
 
-            double intesity = 255 - ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
+            double intesity = ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
             Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
             brush = new SolidColorBrush(color);
             brush.Opacity = 0.1;
 
-            pen = new Pen(Brushes.Black, 1 / Math.Pow(1.8, square.level));
+            pen = new Pen(Brushes.Black, width * 0.003 * Math.Pow(2, square.level));
 
             path = square.path;
         }

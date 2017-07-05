@@ -28,5 +28,6 @@
             <Label Content="Memory usage:" HorizontalAlignment="Left" Margin="199,124,0,0" VerticalAlignment="Top"/>
             <Label x:Name="Accuracy" Content="(Accuracy: 0m)" HorizontalAlignment="Left" Margin="369,36,0,0" VerticalAlignment="Top"/>
         </Grid>
+        <Button x:Name="buttonSelectFolder" Content="Select Folder" Margin="3,3,0,0" VerticalAlignment="Top" Height="29" HorizontalAlignment="Left" Width="83"/>
     </Grid>
 </Window>

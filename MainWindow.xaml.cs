@@ -23,38 +23,18 @@ namespace CarsAndPitsWPF
     /// </summary>
     public partial class MainWindow : Window 
     {
-        ValuesNet net;
-        int currentLevel = 0;
-        int deepness = 7;
-        int maxDepth = 30;
-        long valuesCount = 10000;        
-        Matrix globalM = new Matrix();
+        ValuesNet net;        
+        int maxDepth = 40;
+        long valuesCount = 10000;                
          
         public MainWindow()
         {
             InitializeComponent();
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            if (dialog.ShowDialog().Value)
-            {
+            string folder = Properties.Settings.Default.LastFolder;
+            if (folder == "null")
+                folder = selectFolder();
 
-                List<string> directories = new List<string>();
-                List<string> files = new List<string>();
-                foreach (string path in Directory.GetDirectories(dialog.SelectedPath))
-                {
-                    if (Directory.Exists(path)) directories.Add(path);
-                    else if (File.Exists(path)) files.Add(path);
-                }
-
-                List<CPDataGeo> data = new List<CPDataGeo>();
-                if (directories.Count > 0)
-                    foreach (string path in directories)
-                    {
-                        Dictionary<SensorType, CPData> CPdata = CPData.fromDirectory(path);
-                        data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
-                    }
-
-                init(data);
-            }              
+            
 
             MyWindow.Loaded += MyWindow_Loaded;
         }
@@ -65,7 +45,14 @@ namespace CarsAndPitsWPF
             sliderLevelsCount.ValueChanged += SliderLevelsCount_ValueChanged;
             KeyDown += MainWindow_KeyDown;
             buttonRecalculate.Click += ButtonRecalculate_Click;
-            MainCanvas.MouseWheel += MainCanvas_MouseWheel;
+            buttonSelectFolder.Click += ButtonSelectFolder_Click;
+            MainCanvas.MouseWheel += MainCanvas_MouseWheel;            
+        }
+
+        private void ButtonSelectFolder_Click(object sender, RoutedEventArgs e)
+        {            
+            net = new ValuesNet(maxDepth);
+            init(selectFolder());
         }
 
         private void MainCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
@@ -141,6 +128,18 @@ namespace CarsAndPitsWPF
             }
         }
 
+        private string selectFolder()
+        {
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog().Value)
+            {
+                Properties.Settings.Default.LastFolder = dialog.SelectedPath;
+                Properties.Settings.Default.Save();
+                return dialog.SelectedPath;
+            }
+            else return "null";                            
+        }        
+
         public void init()
         {
             net = new ValuesNet(maxDepth);
@@ -173,6 +172,33 @@ namespace CarsAndPitsWPF
             //setBaseScale();            
         }
 
+        private void init(string folder)
+        {
+            List<string> directories = new List<string>();
+            List<string> files = new List<string>();
+            foreach (string path in Directory.GetDirectories(folder))
+            {
+                if (Directory.Exists(path)) directories.Add(path);
+                else if (File.Exists(path)) files.Add(path);
+            }
+
+            List<CPDataGeo> data = new List<CPDataGeo>();
+
+            Dictionary<SensorType, CPData> CPdata;
+            foreach (string path in directories)
+            {
+                CPdata = CPData.fromDirectory(path);
+                if (CPdata.ContainsKey(SensorType.ACCELEROMETER) && CPdata.ContainsKey(SensorType.GPS))
+                    data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
+            }
+
+            CPdata = CPData.fromDirectory(folder);            
+            if (CPdata.ContainsKey(SensorType.ACCELEROMETER) && CPdata.ContainsKey(SensorType.GPS))
+                data.Add(new CPDataGeo(CPdata[SensorType.ACCELEROMETER], CPdata[SensorType.GPS]));
+
+            init(data);
+        }
+
         private void init(List<CPDataGeo> CPdata)
         {
             net = new ValuesNet(maxDepth);
@@ -190,6 +216,10 @@ namespace CarsAndPitsWPF
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
             ValuesNetElement vnet = new ValuesNetElement(MainCanvas, net);
+            vnet.MouseMove += delegate
+            {
+                Title = String.Format("X: {0}  Y: {1}", vnet.coordinates.X, vnet.coordinates.Y);
+            };
             vnet.MouseWheel += delegate
             {
                 Title = vnet.visibleSquaresCount.ToString();
