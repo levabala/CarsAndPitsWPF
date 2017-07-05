@@ -23,62 +23,50 @@ namespace CarsAndPitsWPF
     /// </summary>
     public partial class MainWindow : Window 
     {
-        ValuesNet net;        
+        ValuesNet net;
+        ValuesNetElement vnet;      
         int maxDepth = 40;
         long valuesCount = 10000;                
          
         public MainWindow()
         {
-            InitializeComponent();
-            string folder = Properties.Settings.Default.LastFolder;
-            if (folder == "null")
-                folder = selectFolder();
-
-            
-
+            InitializeComponent();            
             MyWindow.Loaded += MyWindow_Loaded;
         }
 
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            sliderValuesCount.ValueChanged += SliderValuesCount_ValueChanged;
-            sliderLevelsCount.ValueChanged += SliderLevelsCount_ValueChanged;
             KeyDown += MainWindow_KeyDown;
-            buttonRecalculate.Click += ButtonRecalculate_Click;
-            buttonSelectFolder.Click += ButtonSelectFolder_Click;
-            MainCanvas.MouseWheel += MainCanvas_MouseWheel;            
+            buttonSelectFolder.Click += delegate
+            {
+                net = new ValuesNet(maxDepth);
+                init(selectFolder());
+            };
+
+            string folder = Properties.Settings.Default.LastFolder;
+            if (folder == "null")
+                folder = selectFolder();
+
+            init(folder);
         }
 
-        private void ButtonSelectFolder_Click(object sender, RoutedEventArgs e)
-        {            
-            net = new ValuesNet(maxDepth);
-            init(selectFolder());
-        }
-
-        private void MainCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        private string selectFolder()
         {
-            
-        }
-
-        private void SliderLevelsCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            maxDepth = (int)e.NewValue;
-        }
-
-        private void SliderValuesCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            valuesCount = (long)e.NewValue;
-        }
-
-        private void ButtonRecalculate_Click(object sender, RoutedEventArgs e)
-        {
-            init();
+            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
+            if (dialog.ShowDialog().Value)
+            {
+                Properties.Settings.Default.LastFolder = dialog.SelectedPath;
+                Properties.Settings.Default.Save();
+                return dialog.SelectedPath;
+            }
+            else return "null";
         }
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)
             {
+                #region reservedButtons
                 case Key.Add:
                     /*if (Keyboard.IsKeyDown(Key.LeftCtrl))
                     {
@@ -122,41 +110,21 @@ namespace CarsAndPitsWPF
                 case Key.B:
                     //setBaseScale();
                     break;
+#endregion
                 case Key.Escape:
                     Application.Current.Shutdown();
                     break;
             }
-        }
+        }    
 
-        private string selectFolder()
-        {
-            VistaFolderBrowserDialog dialog = new VistaFolderBrowserDialog();
-            if (dialog.ShowDialog().Value)
-            {
-                Properties.Settings.Default.LastFolder = dialog.SelectedPath;
-                Properties.Settings.Default.Save();
-                return dialog.SelectedPath;
-            }
-            else return "null";                            
-        }        
-
-        public void init()
+        public void init() //random initializer
         {
             net = new ValuesNet(maxDepth);
             Random rnd = new Random();                        
             for (int i = 0; i < valuesCount; i++)
             {
                 Point p = new Point(rnd.NextDouble() * 360 - 180, rnd.NextDouble() * 180 - 90);
-                net.putValue(p.Y, p.X, 3);// rnd.NextDouble() * 10 - 5);
-
-                /*Ellipse circle = new Ellipse();                
-                circle.Width = 3;
-                circle.Height = 3;
-                circle.Opacity = 1;
-                circle.Fill = Brushes.Green;
-                Canvas.SetLeft(circle, points[i].X + 180 - 1.5);
-                Canvas.SetTop(circle, points[i].Y + 90 - 1.5);
-                MainCanvas.Children.Add(circle);*/
+                net.putValue(p.Y, p.X, 3);
             }
 
             SquaresCount.Content = net.totalSquaresCount.ToString();
@@ -164,12 +132,18 @@ namespace CarsAndPitsWPF
             MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
+            vnet = new ValuesNetElement(MainCanvas, net);
+            vnet.MouseMove += delegate
+            {
+                Title = String.Format("X: {0}  Y: {1}", vnet.coordinates.X, vnet.coordinates.Y);
+            };
+            vnet.MouseWheel += delegate
+            {
+                Title = vnet.visibleSquaresCount.ToString();
+            };
 
-            //List<rectgon> rects = new List<rectgon>();            
-            //rects.AddRange(net.generaterectangelsLayer(3));
-
-            //addrectsToCanvas(rects);
-            //setBaseScale();            
+            MainCanvas.Children.Clear();
+            MainCanvas.Children.Add(vnet);
         }
 
         private void init(string folder)
@@ -215,7 +189,7 @@ namespace CarsAndPitsWPF
             MemoryUsage.Content = GC.GetTotalMemory(true) / 1024 / 1024 + "MB";
             Accuracy.Content = "(Accuracy: " + net.accuracy + ")";
 
-            ValuesNetElement vnet = new ValuesNetElement(MainCanvas, net);
+            vnet = new ValuesNetElement(MainCanvas, net);
             vnet.MouseMove += delegate
             {
                 Title = String.Format("X: {0}  Y: {1}", vnet.coordinates.X, vnet.coordinates.Y);
@@ -223,48 +197,10 @@ namespace CarsAndPitsWPF
             vnet.MouseWheel += delegate
             {
                 Title = vnet.visibleSquaresCount.ToString();
-            };            
+            };
 
-            MainCanvas.Children.Add(vnet);            
-
-            /*zerorectgon = net.generateWPFrectgon(net.zeroSquare);
-            MainCanvas.Children.Add(zerorectgon);
-            setBaseScale();  */          
-        }
-
-        /*private void setBaseScale()
-        {
-            globalM.Scale(4, 4);            
-            foreach (UIElement element in MainCanvas.Children)            
-                element.RenderTransform = new MatrixTransform(globalM);            
-        }
-
-        private void fitTorectgon(rectgon rect)
-        {
-            
-        }
-
-        private void addrectsToCanvas(List<rectgon> rects)
-        {
-            if (rects.Count < 4000)
-                foreach (rectgon rect in rects)
-                {                                
-                    rect.RenderTransform = new MatrixTransform(globalM);
-                    MainCanvas.Children.Add(rect);
-                    rect.MouseUp += rect_MouseUp;
-                }
-
-            Title = string.Format("Total values: {0}, Total rectgons: {1}, Level: {2}, Level rectgons: {3}",
-                valuesCount.ToString(), net.totalSquaresCount.ToString(), currentLevel.ToString(), rects.Count.ToString());
-        }*/
-
-        /*private void rect_MouseUp(object sender, MouseButtonEventArgs e)
-        {
             MainCanvas.Children.Clear();
-            MainCanvas.Children.Add(zerorectgon);
-            rectgon rect = (rectgon)sender;
-            //fitTorectgon(rect);
-            addrectsToCanvas(net.generateChildrectgons(net.getSquareByPath((int[])rect.DataContext), 7));            
-        }*/
+            MainCanvas.Children.Add(vnet);             
+        }        
     }
 }

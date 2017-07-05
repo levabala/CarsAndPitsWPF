@@ -14,45 +14,28 @@ namespace CarsAndPitsWPF
     class ValuesNetElement : FrameworkElement
     {
         Size size;
-        ValuesNet net = null;
-        Rect viewRect;
-        SquareRect[] sRectsCache = new SquareRect[0];
-        Square baseViewSquare;
-        List<int> levelsToRender;
-        int maxRectsCount = 5000;
-        Matrix matrix;
-        MatrixTransform transform;
-        Point pressedMouse;        
+        ValuesNet net;        
+        SquareRect[] sRectsCache = new SquareRect[0];        
+        Matrix matrix;                
         Canvas canvas;
+        Point pressedMouse;
+
         public int visibleSquaresCount = 0;
         public Point coordinates;
 
         public ValuesNetElement(Canvas canvas, ValuesNet net)
         {
             this.canvas = canvas;
-            this.net = net;            
-
-            viewRect = new Rect(0, 0, 360, 180);
-            baseViewSquare = net.zeroSquare;
-            levelsToRender = new List<int>() { 0, 1, 2 };
+            this.net = net;                                       
 
             matrix = new Matrix();
             matrix.Scale(4, 4);
             matrix.Translate(180, 90);
-            //transform = new MatrixTransform(matrix);
-
-            //RenderTransform = transform;
 
             SizeChanged += ValuesNetElement_SizeChanged;
             canvas.MouseWheel += ValuesNetElement_MouseWheel;
             canvas.MouseMove += Canvas_MouseMove;
-            canvas.MouseDown += Canvas_MouseDown;
-            canvas.MouseUp += Canvas_MouseUp;            
-        }
-
-        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            Invalidate();
+            canvas.MouseDown += Canvas_MouseDown;          
         }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
@@ -68,34 +51,20 @@ namespace CarsAndPitsWPF
             {                
                 Vector delta = Point.Subtract(mouse, pressedMouse); // delta from old mouse to current mouse
                 matrix.Translate(delta.X, delta.Y);                
-                //transform = new MatrixTransform(matrix);
-
-                //RenderTransform = transform;
                 e.Handled = true;
 
                 InvalidateVisual();
             }
         }
 
-        private Point getInvertedPoint(Point p)
-        {
-            Matrix m = matrix;
-            m.Invert();
-            return m.Transform(p);
-        }
-
         private void ValuesNetElement_MouseWheel(object sender, MouseWheelEventArgs e)
         {
             Point p = e.MouseDevice.GetPosition(canvas);
-            //double reduceCoeff = matrix.M11 * matrix.M11 / 50000 / 50000;
-            //if (reduceCoeff < 1) reduceCoeff = 1;
 
             if (e.Delta > 0)
                 matrix.ScaleAt(1.1, 1.1, p.X, p.Y);
             else
                 matrix.ScaleAt(1 / 1.1, 1 / 1.1, p.X, p.Y);
-
-            //RenderTransform = new MatrixTransform(matrix);
 
             InvalidateVisual();
         }
@@ -105,11 +74,6 @@ namespace CarsAndPitsWPF
         {
             size = e.NewSize;
             InvalidateVisual();
-        }
-
-        public void Invalidate()
-        {
-            
         }
 
         protected override void OnRender(DrawingContext drawingContext)
@@ -134,7 +98,14 @@ namespace CarsAndPitsWPF
             visibleSquaresCount = squaresToRender.Length;                        
             foreach (SquareRect sRect in sRectsCache)
                 drawRect(sRect, drawingContext);                                    
-        }        
+        }
+
+        private Point getInvertedPoint(Point p)
+        {
+            Matrix m = matrix;
+            m.Invert();
+            return m.Transform(p);
+        }
 
         private SquareRect[] generateSRects(Square[] squares)
         {
