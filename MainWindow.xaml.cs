@@ -27,11 +27,11 @@ namespace CarsAndPitsWPF
     {
         ValuesNet net;
         ValuesNetElement vnet;      
-        int maxDepth = 40;
+        int maxDepth = 35;
         long valuesCount = 10000;                
          
         public MainWindow()
-        {
+        {            
             InitializeComponent();            
             MyWindow.Loaded += MyWindow_Loaded;
         }

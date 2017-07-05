@@ -40,16 +40,18 @@ namespace CarsAndPitsWPF
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            pressedMouse = getInvertedPoint(e.GetPosition(canvas));
+            pressedMouse = e.GetPosition(canvas);
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            Point mouse = getInvertedPoint(e.GetPosition(canvas));
+            Point mouse = e.GetPosition(canvas);
             coordinates = mouse;
             if (e.LeftButton == MouseButtonState.Pressed)
-            {                                
-                matrix.Translate(mouse.X - pressedMouse.X, mouse.Y - pressedMouse.Y);                
+            {
+                Vector delta = Point.Subtract(mouse, pressedMouse); // delta from old mouse to current mouse 
+                pressedMouse = mouse;
+                matrix.Translate(delta.X, delta.Y);                
                 e.Handled = true;
 
                 InvalidateVisual();

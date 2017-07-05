@@ -1,0 +1,98 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>CarsAndPitsWPF</name>
+    </assembly>
+    <members>
+        <member name="P:CarsAndPitsWPF.HslColorExtension.H">
+            <summary>
+            Hue (0.0 - 360.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HslColorExtension.S">
+            <summary>
+            Saturation (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HslColorExtension.L">
+            <summary>
+            Lightness (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HslColorExtension.A">
+            <summary>
+            Alpha (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HSLColor.H">
+            <summary>
+            Hue (0.0 - 360.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HSLColor.S">
+            <summary>
+            Saturation (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HSLColor.L">
+            <summary>
+            Lightness (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.HSLColor.A">
+            <summary>
+            Alpha (0.0 - 100.0)
+            </summary>
+        </member>
+        <member name="F:CarsAndPitsWPF.SensorType.array">
+            YYYEEAH        
+        </member>
+        <member name="T:CarsAndPitsWPF.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:CarsAndPitsWPF.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="T:CarsAndPitsWPF.App">
+            <summary>
+            Interaction logic for App.xaml
+            </summary>
+            <summary>
+            App
+            </summary>
+        </member>
+        <member name="M:CarsAndPitsWPF.App.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+        <member name="M:CarsAndPitsWPF.App.Main">
+            <summary>
+            Application Entry Point.
+            </summary>
+        </member>
+        <member name="T:CarsAndPitsWPF.MainWindow">
+            <summary>
+            Interaction logic for MainWindow.xaml
+            </summary>
+            <summary>
+            MainWindow
+            </summary>
+        </member>
+        <member name="M:CarsAndPitsWPF.MainWindow.InitializeComponent">
+            <summary>
+            InitializeComponent
+            </summary>
+        </member>
+    </members>
+</doc>

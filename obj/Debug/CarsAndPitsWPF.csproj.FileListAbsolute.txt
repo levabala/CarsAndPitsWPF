@@ -14,3 +14,17 @@ c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3
 c:\users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.pdb
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.xml
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.XML
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.Core.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsForms.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsPresentation.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.EF6.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.Linq.dll
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.xml
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.xml
+C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.xml
