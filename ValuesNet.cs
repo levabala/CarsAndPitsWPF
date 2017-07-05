@@ -191,6 +191,11 @@ namespace CarsAndPitsWPF
                 square.value += value;
             }
         }
+
+        public Square calcChild(Square s, int index)
+        {
+            return new Square(s, index, s.value);
+        }
         
         public Square getSquare(double lat, double lng)
         {            
@@ -259,10 +264,19 @@ namespace CarsAndPitsWPF
             Point[] points = new Point[]
             {
                 new Point(viewRect.X, viewRect.Y),
-                new Point(viewRect.X + viewRect.Width, viewRect.Y),
-                new Point(viewRect.X + viewRect.Width, viewRect.Y + viewRect.Height),
+                new Point(viewRect.X + viewRect.Width, viewRect.Y),                
                 new Point(viewRect.X, viewRect.Y + viewRect.Height),
+                new Point(viewRect.X + viewRect.Width, viewRect.Y + viewRect.Height)
             };
+
+            for (int ii = 0; ii < 4; ii++)
+            {
+                if (points[ii].X > 180) points[ii].X = 180;
+                else if (points[ii].X < -180) points[ii].X = -180;
+                if (points[ii].Y > 90) points[ii].Y = 90;
+                else if (points[ii].Y < -90) points[ii].Y = -90;
+            }
+
             int[][] pathes = new int[][]
             {
                 getPathToSquare(points[0].Y, points[0].X, baseSquare.level),
@@ -270,6 +284,9 @@ namespace CarsAndPitsWPF
                 getPathToSquare(points[2].Y, points[2].X, baseSquare.level),
                 getPathToSquare(points[3].Y, points[3].X, baseSquare.level)
             };
+
+            Point centerPoint = new Point(viewRect.X + viewRect.Width / 2, viewRect.Y + viewRect.Height / 2);
+            int[] centerPath = getPathToSquare(centerPoint.Y, centerPoint.X, baseSquare.level);
 
             int depth = Math.Max(Math.Max(pathes[0].Length, pathes[1].Length), Math.Max(pathes[2].Length, pathes[3].Length));
             if (depth > deepness) depth = deepness;
@@ -282,91 +299,93 @@ namespace CarsAndPitsWPF
                     new int[] {0,1,2,3},
                     new int[] {1,3},
                     new int[] {2,3},
-                    new int[] {3}
+                    new int[] {3},
+                    new int[] {}
                 },
                 new int[][]
                 {
                     new int[] {0,2},
                     new int[] {0,1,2,3},
                     new int[] {2},
-                    new int[] {2,3}
+                    new int[] {2,3},
+                    new int[] {}
                 },
                 new int[][]
                 {
                     new int[] {0,1},
                     new int[] {1},
                     new int[] {0,1,2,3},
-                    new int[] {1,3}                 
+                    new int[] {1,3},
+                    new int[] {}
                 },
                 new int[][]
                 {
                     new int[] {0},
                     new int[] {0,1},
                     new int[] {0,2},
-                    new int[] {0,1,2,3}
+                    new int[] {0,1,2,3},
+                    new int[] {}
                 }
             };
             #endregion
 
-            visibleSquares.AddRange(
-                getSquaresInViewRect(square, depth, deepness, pathes, chooseMap, points)
-                );
-
-            /*for (int i = 0; i < depth; i++)
-            {
-                bool skip = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
-                //bool skip = (pathes[0][i] - pathes[1][i]) == 0 && (pathes[2][i] - pathes[3][i]) == 0;
-                if (skip)
+            Square[] centerSquares = getSquaresArray(centerPath, true);
+            Square lowermostCommonSquare = baseSquare;
+            for (int i = centerSquares.Length - 1; i > -1; i--) {
+                Square s = centerSquares[i];
+                bool p0In = pointInRect(new Rect(s.lng, s.lat, getSWidth(s), getSHeight(s)), points[0]);
+                bool p1In = pointInRect(new Rect(s.lng, s.lat, getSWidth(s), getSHeight(s)), points[1]);
+                bool p2In = pointInRect(new Rect(s.lng, s.lat, getSWidth(s), getSHeight(s)), points[2]);
+                bool p3In = pointInRect(new Rect(s.lng, s.lat, getSWidth(s), getSHeight(s)), points[3]);
+                if (p0In && p1In && p2In && p3In)
                 {
-                    if (square == null) return visibleSquares;
-                    square = square.children[0];
-                    continue;
-                }
-
-                //Square[][] childrenToProcess = new Square[4][];
-                for (int ii = 0; ii < 4; ii++)
-                {
-                    int[] indexes = chooseMap[ii][getChildIndex(square.lat, square.lng, points[ii].Y, points[ii].X, square.level)];
-                    List<Square> children = getChildSquares(square, indexes);
-                    //childrenToProcess[ii] = children.ToArray();
-
-                    foreach (Square s in children)
-                        visibleSquares.AddRange(getChildSquares(s, deepness - i - 1));
-                }
-            }      */                 
-
-            return visibleSquares;
-        }
-
-        private List<Square> getSquaresInViewRect(Square square, int depth, int deepness, int[][] pathes, int[][][] chooseMap, Point[] points)
-        {
-            List<Square> visibleSquares = new List<Square>();
-            for (int i = square.level; i < depth; i++)
-            {
-                bool skip = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
-                //bool skip = (pathes[0][i] - pathes[1][i]) == 0 && (pathes[2][i] - pathes[3][i]) == 0;
-                if (skip)
-                {
-                    if (square == null) return visibleSquares;
-                    foreach (Square s in square.children)
-                        if (s != null)
-                            visibleSquares.AddRange(getSquaresInViewRect(s, depth, deepness, pathes, chooseMap, points));
+                    if (i == centerSquares.Length - 1) i--;
+                    lowermostCommonSquare = centerSquares[i];
                     break;
                 }
-
-                visibleSquares.Add(square);
-
-                //Square[][] childrenToProcess = new Square[4][];
-                for (int ii = 0; ii < 4; ii++)
-                {
-                    int[] indexes = chooseMap[ii][getChildIndex(square.lat, square.lng, points[ii].Y, points[ii].X, square.level)];
-                    List<Square> children = getChildSquares(square, indexes);
-                    //childrenToProcess[ii] = children.ToArray();
-
-                    foreach (Square s in children)
-                        visibleSquares.AddRange(getChildSquares(s, deepness - i - 1));
-                }
             }
+
+            visibleSquares.Add(lowermostCommonSquare);
+            visibleSquares.AddRange(getChildSquares(lowermostCommonSquare, 8));
+
+            /*int i = 1;
+            bool commonSquare = (pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i]);
+            while (commonSquare && i < depth)
+            {
+                commonSquare = pathes[0][i] == pathes[1][i] && pathes[1][i] == pathes[2][i] && pathes[2][i] == pathes[3][i];
+                for (int p = 0; p < pathes.Length; p++)
+                {
+
+                }
+                
+                square = square.children[pathes[0][i]];
+                visibleSquares.Add(square);                
+                i++;
+            }*/
+
+                    //visibleSquares = getSquaresInViewRect(square, depth, pathes, chooseMap, points);            
+
+            return visibleSquares;
+        }        
+
+        private List<Square> getSquaresInViewRect(Square square, int deepness, int[][] pathes, int[][][] chooseMap, Point[] points)
+        {
+            if (deepness <= 0) return new List<Square>();
+            deepness--;
+
+            List<Square> visibleSquares = new List<Square>();
+            int[] indexes = new int[4];
+            for (int ii = 0; ii < 4; ii++)
+            {
+                int[] inds = chooseMap[ii][getChildIndex(square.lat, square.lng, points[ii].Y, points[ii].X, square.level)];
+                foreach (int iii in inds)
+                    if (!indexes.Contains(iii)) indexes[iii] = iii;
+            }
+
+            List<Square> children = getChildSquares(square, indexes);
+
+            foreach (Square s in children)
+                visibleSquares.AddRange(getSquaresInViewRect(s, deepness, pathes, chooseMap, points));
 
             return visibleSquares;
         }
@@ -374,26 +393,54 @@ namespace CarsAndPitsWPF
         public int[] getPathToSquare(double lat, double lng, int startLevel = 0)
         {
             int[] path = new int[maxDepth-1];            
-            double squareLat = -90 / Math.Pow(2, startLevel);
-            double squareLng = -180 / Math.Pow(2, startLevel);
+            double squareLat = -getSHeight(startLevel) / 2;
+            double squareLng = -getSWidth(startLevel) / 2;
             for (int level = startLevel; level < maxDepth - 1; level++)
                 path[level] = getChildIndex(ref squareLat, ref squareLng, lat, lng, level);
 
             return path;
         }     
 
+        public Square[] getSquaresArray(int[] path, bool emulateNullSquares = false)
+        {
+            List<Square> output = new List<Square>();
+            Square s = zeroSquare;
+            foreach (int i in path)
+                if (s.children[i] != null)
+                {
+                    output.Add(s);
+                    s = s.children[i];
+                }
+                else if (emulateNullSquares) {
+                    for (int ii = i; ii < path.Length; ii++)
+                    {
+                        output.Add(s);
+                        s = calcChild(s, ii);
+                    }
+                    break;
+                }
+                else break;
+
+            return output.ToArray();
+        }        
+
+        public bool pointInRect(Rect rect, Point p)
+        {
+            return p.X > rect.X && p.X < rect.X + rect.Width && p.Y > rect.Y && p.Y < rect.Y + rect.Height;
+        }
+
         private int getChildIndex(ref double squareLat, ref double squareLng, double lat, double lng, int level)
         {
-            double sHeight = 180 / Math.Pow(2, level);
-            double sWidth = 360 / Math.Pow(2, level); //squareWidth
+            double sHeight = getSHeight(level);
+            double sWidth = getSWidth(level); //squareWidth
             double centerLat = squareLat + sHeight / 2;
             double centerLng = squareLng + sWidth / 2;
 
             //can I replace it??
             int index = 0;
-            if (lat > centerLat)
+            if (lat >= centerLat)
             {
-                if (lng > centerLng)
+                if (lng >= centerLng)
                 {
                     index = 3;
                     squareLng = centerLng;
@@ -401,7 +448,7 @@ namespace CarsAndPitsWPF
                 else index = 2;
                 squareLat = centerLat;
             }
-            else if (lng > centerLng)
+            else if (lng >= centerLng)
             {
                 index = 1;
                 squareLng = centerLng;
@@ -412,8 +459,8 @@ namespace CarsAndPitsWPF
 
         private int getChildIndex(double squareLat, double squareLng, double lat, double lng, int level)
         {
-            double sHeight = 180 / Math.Pow(2, level);
-            double sWidth = 360 / Math.Pow(2, level); //squareWidth
+            double sHeight = getSHeight(level);
+            double sWidth = getSWidth(level); //squareWidth
             double centerLat = squareLat + sHeight / 2;
             double centerLng = squareLng + sWidth / 2;
 
@@ -436,6 +483,26 @@ namespace CarsAndPitsWPF
             }
 
             return index;
+        }
+
+        private double getSWidth(Square s)
+        {
+            return 360 / Math.Pow(2, s.level);
+        }
+
+        private double getSWidth(int level)
+        {
+            return 360 / Math.Pow(2, level);
+        }
+
+        private double getSHeight(Square s)
+        {
+            return 180 / Math.Pow(2, s.level);
+        }
+
+        private double getSHeight(int level)
+        {
+            return 180 / Math.Pow(2, level);
         }
 
         private List<Square> getChildSquares(Square baseSquare, int[] indexes)
