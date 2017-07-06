@@ -18,6 +18,7 @@ using System.IO;
 using System.Windows.Threading;
 using System.ComponentModel;
 using GMap.NET;
+using GMap.NET.WindowsPresentation;
 
 namespace CarsAndPitsWPF
 {
@@ -132,10 +133,11 @@ namespace CarsAndPitsWPF
                 },
                 (s, args) =>
                 {
-                    vnet = new ValuesNetElement(MainCanvas, net);
+                    //vnet = new ValuesNetElement(MainCanvas, net);                    
+                    ValuesNetGMap vnetGMap = new ValuesNetGMap(net, mapView);    
 
                     MainCanvas.Children.Clear();
-                    MainCanvas.Children.Add(vnet);
+                    MainCanvas.Children.Add(vnetGMap);                    
                 });            
         }
 
@@ -149,10 +151,18 @@ namespace CarsAndPitsWPF
                 },
                 (s, args) =>
                 {
-                    vnet = new ValuesNetElement(MainCanvas, net);
+                    ValuesNetGMap vnetGMap = new ValuesNetGMap(net, mapView);
+                    mapView.OnMapZoomChanged += delegate
+                    {
+                        Title = vnetGMap.visibleSquaresCount.ToString();
+                    };
+                    mapView.OnMapDrag += delegate
+                    {
+                        Title = vnetGMap.visibleSquaresCount.ToString();
+                    };
 
                     MainCanvas.Children.Clear();
-                    MainCanvas.Children.Add(vnet);
+                    MainCanvas.Children.Add(vnetGMap);
                 });
         }
 

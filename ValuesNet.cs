@@ -326,7 +326,7 @@ namespace CarsAndPitsWPF
             lastUpperSquare = lowermostCommonSquare;
 
             visibleSquares.Add(lowermostCommonSquare);
-            visibleSquares.AddRange(getChildSquaresLimited(lowermostCommonSquare, 1500));
+            visibleSquares.AddRange(getChildSquaresLimited(lowermostCommonSquare, 500));
 
             squaresCache = visibleSquares.ToArray();
 

@@ -10,6 +10,7 @@
         Title="CarsAndPits Calculator">
     <Grid x:Name="MyGrid">
         <Canvas x:Name="MainCanvas" Margin="0" ClipToBounds="True" Background="Transparent"/>
+        <gmaps:GMapControl x:Name="mapView"/>
         <Grid Margin="10,10,0,0" HorizontalAlignment="Left" Width="526" Height="159" VerticalAlignment="Top" Visibility="Hidden">
             <Slider x:Name="sliderValuesCount" Margin="10,10,0,98" Minimum="0" Maximum="1000000" Value="10000" IsSnapToTickEnabled="True" TickFrequency="1" HorizontalAlignment="Left" Width="189"/>
             <Label x:Name="ValuesCount" Content="{Binding ElementName=sliderValuesCount, Path=Value}" HorizontalAlignment="Left" Margin="287,5,0,0" VerticalAlignment="Top" Width="77"/>
