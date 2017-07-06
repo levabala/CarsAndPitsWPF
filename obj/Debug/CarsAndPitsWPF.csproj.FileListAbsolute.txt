@@ -18,7 +18,6 @@ C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.Core.dll
-C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsForms.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsPresentation.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.dll
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.dll

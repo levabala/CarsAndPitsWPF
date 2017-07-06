@@ -29,7 +29,7 @@ namespace CarsAndPitsWPF
             this.net = net;                                       
 
             matrix = new Matrix();
-            matrix.Scale(4, 4);
+            matrix.Scale(4, -4);
             matrix.Translate(180, 90);
 
             SizeChanged += ValuesNetElement_SizeChanged;

@@ -271,7 +271,7 @@ namespace CarsAndPitsWPF
         }
 
         //View functions
-        public bool findSquaresInViewRect(Square baseSquare, Rect viewRect, int deepness = -1)
+        public bool findSquaresInViewRect(Square baseSquare, Rect viewRect, int maxSquaresCount = 500, int deepness = -1)
         {            
             if (deepness == -1) deepness = maxDepth;
 
@@ -326,7 +326,7 @@ namespace CarsAndPitsWPF
             lastUpperSquare = lowermostCommonSquare;
 
             visibleSquares.Add(lowermostCommonSquare);
-            visibleSquares.AddRange(getChildSquaresLimited(lowermostCommonSquare, 1500));
+            visibleSquares.AddRange(getChildSquaresLimited(lowermostCommonSquare, maxSquaresCount));
 
             squaresCache = visibleSquares.ToArray();
 
