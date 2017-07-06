@@ -101,7 +101,9 @@
     <Compile Include="CPData.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="ValuesNet.cs" />
+    <Compile Include="ValuesNetManager.cs" />
     <Compile Include="ValuesNetElement.cs" />
+    <Compile Include="ValuesNetGMap.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

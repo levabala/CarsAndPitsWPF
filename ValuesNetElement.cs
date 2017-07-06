@@ -29,15 +29,14 @@ namespace CarsAndPitsWPF
             this.net = net;                                       
 
             matrix = new Matrix();
-            matrix.Scale(2, 4);
-            matrix.Scale(1, -1);
-            matrix.Translate(180, 90);            
+            matrix.Scale(4, -4);
+            matrix.Translate(180, 90);
 
             SizeChanged += ValuesNetElement_SizeChanged;
             canvas.MouseWheel += ValuesNetElement_MouseWheel;
             canvas.MouseMove += Canvas_MouseMove;
             canvas.MouseDown += Canvas_MouseDown;          
-        }        
+        }
 
         private void Canvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
