@@ -46,11 +46,11 @@ namespace CarsAndPitsWPF
 
             mapView.OnMapDrag += delegate
             {
-                InvalidateVisual();
+                //InvalidateVisual();
             };
             mapView.OnMapZoomChanged += delegate
             {
-                InvalidateVisual();
+                //InvalidateVisual();
             };
         }
 
