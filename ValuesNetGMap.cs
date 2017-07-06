@@ -37,12 +37,21 @@ namespace CarsAndPitsWPF
             GMaps.Instance.Mode = AccessMode.ServerAndCache;                        
             mapView.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;
             mapView.MinZoom = 2;
-            mapView.MaxZoom = 17;            
+            mapView.MaxZoom = 20;            
             mapView.Zoom = 2;            
             mapView.MouseWheelZoomType = MouseWheelZoomType.MousePositionWithoutCenter;
             mapView.ShowCenter = false;            
             mapView.CanDragMap = true;            
             mapView.DragButton = MouseButton.Left;
+
+            mapView.OnMapDrag += delegate
+            {
+                InvalidateVisual();
+            };
+            mapView.OnMapZoomChanged += delegate
+            {
+                InvalidateVisual();
+            };
         }
 
         private void drawRect(SquareRect sRect)
@@ -63,23 +72,24 @@ namespace CarsAndPitsWPF
             p.Fill = sRect.brush;
             p.Opacity = 0.2;
 
-            mapView.Markers.Add(polygon);
+            mapView.Markers.Add(polygon);                        
         }
 
         protected override void OnRender(DrawingContext drawingContext)
         {
             base.OnRender(drawingContext);
-
+                    
             Point[] edges = new Point[]
             {
                 new Point(mapView.ViewArea.Lng, mapView.ViewArea.Lat),
                 new Point(mapView.ViewArea.Lng + mapView.ViewArea.WidthLng, mapView.ViewArea.Lat + mapView.ViewArea.HeightLat)
             };
-            bool changed = net.findSquaresInViewRect(net.zeroSquare, new Rect(edges[0], edges[1]));
+            bool changed = net.findSquaresInViewRect(net.zeroSquare, new Rect(edges[0], edges[1]), 600);
 
             Square[] squaresToRender = net.getCachedSquares();
             if (squaresToRender == null)
             {
+                mapView.Markers.Clear();
                 drawRect(new SquareRect(net.zeroSquare, net.maxValue));
                 foreach (Square square in net.getChildSquares(net.zeroSquare, 2))
                     drawRect(new SquareRect(square, net.maxValue));
@@ -87,11 +97,14 @@ namespace CarsAndPitsWPF
             }
 
             if (changed)
+            {
                 sRectsCache = generateSRects(squaresToRender);
+                mapView.Markers.Clear();
 
-            visibleSquaresCount = squaresToRender.Length;
-            foreach (SquareRect sRect in sRectsCache)
-                drawRect(sRect);
+                visibleSquaresCount = squaresToRender.Length;
+                foreach (SquareRect sRect in sRectsCache)
+                    drawRect(sRect);                
+            }            
         }
 
         private SquareRect[] generateSRects(Square[] squares)
