@@ -27,4 +27,3 @@ C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\EntityFramework.SqlServer.xml
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.xml
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.xml
-C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\GMapPro.g.cs

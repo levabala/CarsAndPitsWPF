@@ -97,9 +97,6 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="CPDataGeo.cs" />
-    <Compile Include="GMapPro.xaml.cs">
-      <DependentUpon>GMapPro.xaml</DependentUpon>
-    </Compile>
     <Compile Include="HSLColor.cs" />
     <Compile Include="CPData.cs" />
     <Compile Include="Settings.cs" />
@@ -107,10 +104,6 @@
     <Compile Include="ValuesNetManager.cs" />
     <Compile Include="ValuesNetElement.cs" />
     <Compile Include="ValuesNetGMap.cs" />
-    <Page Include="GMapPro.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
