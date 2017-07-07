@@ -46,11 +46,11 @@ namespace CarsAndPitsWPF
 
             mapView.OnMapDrag += delegate
             {
-                //InvalidateVisual();
+                InvalidateVisual();
             };
             mapView.OnMapZoomChanged += delegate
             {
-                //InvalidateVisual();
+                InvalidateVisual();
             };
         }
 
@@ -77,9 +77,9 @@ namespace CarsAndPitsWPF
 
         protected override void OnRender(DrawingContext drawingContext)
         {
-            base.OnRender(drawingContext);
-                    
-            Point[] edges = new Point[]
+            base.OnRender(drawingContext);            
+
+            /*Point[] edges = new Point[]
             {
                 new Point(mapView.ViewArea.Lng, mapView.ViewArea.Lat),
                 new Point(mapView.ViewArea.Lng + mapView.ViewArea.WidthLng, mapView.ViewArea.Lat + mapView.ViewArea.HeightLat)
@@ -104,7 +104,19 @@ namespace CarsAndPitsWPF
                 visibleSquaresCount = squaresToRender.Length;
                 foreach (SquareRect sRect in sRectsCache)
                     drawRect(sRect);                
-            }            
+            }*/
+
+            Brush brush = new SolidColorBrush(Colors.Green);
+            brush.Opacity = 0.3;
+            Point p1 = new Point(0, 0);
+            Point p2 = new Point(50, 50);
+            p1 = mapView.TranslatePoint(p1, (UIElement)Parent);
+            p2 = mapView.TranslatePoint(p2, (UIElement)Parent);
+            Matrix m = mapView.RenderTransform.Value;
+            Matrix m2 = mapView.LayoutTransform.Value;
+            
+            drawingContext.DrawRectangle(brush, new Pen(Brushes.Black, 1), 
+                new Rect(p1, p2));
         }
 
         private SquareRect[] generateSRects(Square[] squares)
