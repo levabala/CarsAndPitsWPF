@@ -165,6 +165,11 @@ namespace CarsAndPitsWPF
 
                     MainCanvas.Children.Clear();
                     MainCanvas.Children.Add(vnetGMap);
+
+                    /*vnet = new ValuesNetElement(MainCanvas, net);
+
+                    MainCanvas.Children.Clear();
+                    MainCanvas.Children.Add(vnet);*/
                 });
         }
 
