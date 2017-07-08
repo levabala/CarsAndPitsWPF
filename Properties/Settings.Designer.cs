@@ -34,5 +34,16 @@ namespace CarsAndPitsWPF.Properties {
                 this["LastFolder"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.Collections.Specialized.StringCollection CachedData {
+            get {
+                return ((global::System.Collections.Specialized.StringCollection)(this["CachedData"]));
+            }
+            set {
+                this["CachedData"] = value;
+            }
+        }
     }
 }

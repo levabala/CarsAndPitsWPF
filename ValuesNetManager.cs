@@ -71,7 +71,7 @@ namespace CarsAndPitsWPF
                 foreach (CPDataGeo data in CPdata)
                     totalCount += data.geoData.Length;
 
-                foreach (CPDataGeo data in CPdata)
+                Parallel.ForEach(CPdata, (data) =>
                 {
                     int part = 0;
                     int triggerPart = data.geoData.Length / 100;
@@ -90,7 +90,7 @@ namespace CarsAndPitsWPF
                             bw.ReportProgress((int)(counter / totalCount * 100));
                         }
                     }
-                }
+                });
             };
             bw.ProgressChanged += processHandler;
             bw.RunWorkerCompleted += completeHandler;
@@ -117,5 +117,29 @@ namespace CarsAndPitsWPF
             bw.RunWorkerCompleted += completeHandler;
             bw.RunWorkerAsync();
         }
-    }
+
+        public static CPDataSerializable[] getFromCache(string cacheFolder)
+        {
+            if (!(Directory.Exists(cacheFolder))) return new CPDataSerializable[0];
+
+            string[] files = Directory.GetFiles(cacheFolder);
+            CPDataSerializable[] output = new CPDataSerializable[files.Length];
+
+            for (int i = 0; i < files.Length; i++)
+                output[i] = CPDataSerializable.deserializeFrom(files[i]);
+
+            return output;
+        }
+
+        public static void saveToCache(string cacheFolder, CPDataSerializable[] data)
+        {
+            //clean
+            DirectoryInfo di = new DirectoryInfo(cacheFolder);
+            foreach (FileInfo file in di.GetFiles())            
+                file.Delete();            
+
+            //fill
+            CPDataSerializable.serializeToFolder(cacheFolder, data);
+        }
+    }    
 }

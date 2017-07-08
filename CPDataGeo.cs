@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF
 {
-    class CPDataGeo
+    class CPDataGeo : CPDataSerializable
     {
         public long startTime;
         public string deviceId;        

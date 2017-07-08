@@ -27,8 +27,6 @@ namespace CarsAndPitsWPF
 
             setUpMap(mapView);
 
-            //drawRect(new SquareRect(net.zeroSquare, net.maxValue));                        
-
             InvalidateVisual();
         }
 
@@ -82,7 +80,7 @@ namespace CarsAndPitsWPF
             bool changed = net.findSquaresInViewRect(
                 net.zeroSquare, 
                 new Rect(new Point(edges[0].Lng, edges[0].Lat), new Point(edges[1].Lng, edges[1].Lat)), 
-                1000);
+                2000);
 
             Square[] squaresToRender = net.getCachedSquares();
             if (squaresToRender == null)
@@ -100,11 +98,11 @@ namespace CarsAndPitsWPF
             foreach (SquareRect sRect in sRectsCache)
                 drawRect(sRect, drawingContext);
 
-            GPoint p = mapView.FromLatLngToLocal(edges[0]);
+            /*GPoint p = mapView.FromLatLngToLocal(edges[0]);
             GPoint p1 = mapView.FromLatLngToLocal(edges[1]);
 
             drawingContext.DrawEllipse(Brushes.Green, new Pen(Brushes.Black, 1), new Point(p.X, p.Y), 20, 20);
-            drawingContext.DrawEllipse(Brushes.Green, new Pen(Brushes.Black, 1), new Point(p1.X, p1.Y), 20, 20);
+            drawingContext.DrawEllipse(Brushes.Green, new Pen(Brushes.Black, 1), new Point(p1.X, p1.Y), 20, 20);*/
         }
 
         private SquareRect[] generateSRects(Square[] squares)

@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF
 {
-    class CPData //Cars&PitsDataParser
+    [Serializable]
+    class CPData : CPDataSerializable
     {
         public long startTime;
         public string deviceId;
@@ -30,13 +33,21 @@ namespace CarsAndPitsWPF
             SensorType type = SensorType.fromString(Path.GetFileNameWithoutExtension(path));
             if (type == SensorType.UNKNOWN)
                 throw new FileFormatException("Filename isn't valid!");
+            sensor = type;
 
-            List<DataTuplya> data = new List<DataTuplya>();
             string[] lines = File.ReadAllLines(path);
+
+            if (lines.Length < 3)
+            {
+                this.data = new DataTuplya[0];
+                return;
+            }
+
+            DataTuplya[] data = new DataTuplya[lines.Length - 3];
             startTime = long.Parse(lines[0].Split(' ')[2]);
             deviceId = lines[1].Split(' ')[2];
 
-            for (int i = 2; i < lines.Length; i++)
+            Parallel.For(2, lines.Length-1, (i) =>
             {
                 String[] str = lines[i].Split('\t');
                 int time = int.Parse(str[0]);
@@ -46,11 +57,10 @@ namespace CarsAndPitsWPF
                     str[ii] = str[ii].Replace("\t", "").Replace(",", ".");
                     if (str[ii].Length > 1) values.Add(double.Parse(str[ii]));
                 }
-                data.Add(new DataTuplya(time, values.ToArray()));
-            }
-
-            this.sensor = type;
-            this.data = data.ToArray();
+                data[i - 2] = new DataTuplya(time, values.ToArray());
+            });                        
+            
+            this.data = data;
         }    
         
         public static Dictionary<SensorType, CPData> fromDirectory(string path)
@@ -67,7 +77,7 @@ namespace CarsAndPitsWPF
             }
 
             return data;
-        }    
+        }            
     }
 
     struct DataTuplya

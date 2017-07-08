@@ -19,6 +19,7 @@ using System.Windows.Threading;
 using System.ComponentModel;
 using GMap.NET;
 using GMap.NET.WindowsPresentation;
+using System.Collections.Specialized;
 
 namespace CarsAndPitsWPF
 {
@@ -28,8 +29,9 @@ namespace CarsAndPitsWPF
     public partial class MainWindow : Window 
     {
         ValuesNet net;
-        ValuesNetElement vnet;        
-        int maxDepth = 35;
+        ValuesNetElement vnet;
+        ValuesNetGMap vnetGMap;
+        int maxDepth = 25; //so we'll get accuracy close to 7 meters
         long valuesCount = 10000;                
          
         public MainWindow()
@@ -40,18 +42,30 @@ namespace CarsAndPitsWPF
 
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            string folder;
+
             KeyDown += MainWindow_KeyDown;            
             buttonSelectFolder.Click += delegate
             {
                 net = new ValuesNet(maxDepth);
-                init(selectFolder());
+                folder = selectFolder();
+                if (folder == "null")
+                    return;
+                init(folder);
             };
-            
+
             //MyGrid.Children.Add(mapView);
 
-            string folder = Properties.Settings.Default.LastFolder;
+            StringCollection cachedData = Properties.Settings.Default.CachedData;
+
+            folder = Properties.Settings.Default.LastFolder;
             if (folder == "null")
+            {
                 folder = selectFolder();
+                if (folder == "null")
+                    return;
+            }
+                
 
             init(folder);
         }
@@ -153,7 +167,7 @@ namespace CarsAndPitsWPF
                 },
                 (s, args) =>
                 {
-                    ValuesNetGMap vnetGMap = new ValuesNetGMap(net, mapView);
+                    vnetGMap = new ValuesNetGMap(net, mapView);
                     mapView.OnMapZoomChanged += delegate
                     {
                         Title = vnetGMap.visibleSquaresCount.ToString();

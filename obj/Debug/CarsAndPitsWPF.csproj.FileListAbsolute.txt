@@ -28,3 +28,7 @@ C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.xml
 C:\Users\levabala\documents\visual studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.xml
 C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe.manifest
+C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.application
+C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe.manifest
+C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.application
