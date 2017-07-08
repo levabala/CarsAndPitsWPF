@@ -20,6 +20,8 @@ using System.ComponentModel;
 using GMap.NET;
 using GMap.NET.WindowsPresentation;
 using System.Collections.Specialized;
+using System.Threading;
+using System.Globalization;
 
 namespace CarsAndPitsWPF
 {
@@ -59,7 +61,7 @@ namespace CarsAndPitsWPF
             StringCollection cachedData = Properties.Settings.Default.CachedData;
 
             folder = Properties.Settings.Default.LastFolder;
-            if (folder == "null")
+            if (true || folder == "null")
             {
                 folder = selectFolder();
                 if (folder == "null")

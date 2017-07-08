@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace CarsAndPitsWPF
@@ -45,10 +47,13 @@ namespace CarsAndPitsWPF
 
             DataTuplya[] data = new DataTuplya[lines.Length - 3];
             startTime = long.Parse(lines[0].Split(' ')[2]);
-            deviceId = lines[1].Split(' ')[2];
+            deviceId = lines[1].Split(' ')[2];            
 
             Parallel.For(2, lines.Length-1, (i) =>
             {
+                Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+                Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
+
                 String[] str = lines[i].Split('\t');
                 int time = int.Parse(str[0]);
                 List<double> values = new List<double>();

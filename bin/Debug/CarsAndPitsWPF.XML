@@ -4,46 +4,6 @@
         <name>CarsAndPitsWPF</name>
     </assembly>
     <members>
-        <member name="P:CarsAndPitsWPF.HslColorExtension.H">
-            <summary>
-            Hue (0.0 - 360.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HslColorExtension.S">
-            <summary>
-            Saturation (0.0 - 100.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HslColorExtension.L">
-            <summary>
-            Lightness (0.0 - 100.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HslColorExtension.A">
-            <summary>
-            Alpha (0.0 - 100.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HSLColor.H">
-            <summary>
-            Hue (0.0 - 360.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HSLColor.S">
-            <summary>
-            Saturation (0.0 - 100.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HSLColor.L">
-            <summary>
-            Lightness (0.0 - 100.0)
-            </summary>
-        </member>
-        <member name="P:CarsAndPitsWPF.HSLColor.A">
-            <summary>
-            Alpha (0.0 - 100.0)
-            </summary>
-        </member>
         <member name="F:CarsAndPitsWPF.SensorType.array">
             YYYEEAH        
         </member>
@@ -92,36 +52,6 @@
         <member name="M:CarsAndPitsWPF.MainWindow.InitializeComponent">
             <summary>
             InitializeComponent
-            </summary>
-        </member>
-        <member name="T:XamlGeneratedNamespace.GeneratedInternalTypeHelper">
-            <summary>
-            GeneratedInternalTypeHelper
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateInstance(System.Type,System.Globalization.CultureInfo)">
-            <summary>
-            CreateInstance
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.GetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            GetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.SetPropertyValue(System.Reflection.PropertyInfo,System.Object,System.Object,System.Globalization.CultureInfo)">
-            <summary>
-            SetPropertyValue
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.CreateDelegate(System.Type,System.Object,System.String)">
-            <summary>
-            CreateDelegate
-            </summary>
-        </member>
-        <member name="M:XamlGeneratedNamespace.GeneratedInternalTypeHelper.AddEventHandler(System.Reflection.EventInfo,System.Object,System.Delegate)">
-            <summary>
-            AddEventHandler
             </summary>
         </member>
     </members>

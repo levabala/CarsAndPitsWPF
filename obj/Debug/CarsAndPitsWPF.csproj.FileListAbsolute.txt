@@ -32,3 +32,31 @@ C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3
 C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.application
 C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe.manifest
 C:\Users\levabala\Documents\Visual Studio 2015\Projects\WindowsFormsApplication3\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.application
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\MainWindow.g.cs
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\App.g.cs
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF_MarkupCompile.cache
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF_MarkupCompile.lref
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe.config
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe.manifest
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.application
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.XML
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.exe
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\CarsAndPitsWPF.pdb
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\GMap.NET.Core.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsForms.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\GMap.NET.WindowsPresentation.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.dll
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\Ookii.Dialogs.Wpf.xml
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\System.Data.SQLite.xml
+D:\Documents\Projects\CarsAndPitsWPF\bin\Debug\Newtonsoft.Json.xml
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\MainWindow.baml
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.g.resources
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.Properties.Resources.resources
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.csproj.GenerateResource.Cache
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe.manifest
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.application
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.exe
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.pdb
+D:\Documents\Projects\CarsAndPitsWPF\obj\Debug\CarsAndPitsWPF.csprojResolveAssemblyReference.cache
