@@ -28,7 +28,7 @@ namespace CarsAndPitsWPF
     public partial class MainWindow : Window 
     {
         ValuesNet net;
-        ValuesNetElement vnet;      
+        ValuesNetElement vnet;        
         int maxDepth = 35;
         long valuesCount = 10000;                
          
@@ -46,6 +46,8 @@ namespace CarsAndPitsWPF
                 net = new ValuesNet(maxDepth);
                 init(selectFolder());
             };
+            
+            //MyGrid.Children.Add(mapView);
 
             string folder = Properties.Settings.Default.LastFolder;
             if (folder == "null")
