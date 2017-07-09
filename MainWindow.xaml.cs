@@ -48,7 +48,7 @@ namespace CarsAndPitsWPF
 
             Application.Current.DispatcherUnhandledException += delegate
             {
-                Properties.Settings.Default.LastFolder = "null";
+                Properties.Settings.Default.LastFolder = "null"; 
             };            
 
             KeyDown += MainWindow_KeyDown;            
