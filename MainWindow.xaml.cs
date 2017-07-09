@@ -46,6 +46,11 @@ namespace CarsAndPitsWPF
         {
             string folder;
 
+            Application.Current.DispatcherUnhandledException += delegate
+            {
+                Properties.Settings.Default.LastFolder = "null";
+            };            
+
             KeyDown += MainWindow_KeyDown;            
             buttonSelectFolder.Click += delegate
             {
@@ -61,7 +66,7 @@ namespace CarsAndPitsWPF
             StringCollection cachedData = Properties.Settings.Default.CachedData;
 
             folder = Properties.Settings.Default.LastFolder;
-            if (true || folder == "null")
+            if (folder == "null")
             {
                 folder = selectFolder();
                 if (folder == "null")
