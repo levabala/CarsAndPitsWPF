@@ -68,18 +68,28 @@ namespace CarsAndPitsWPF
             {
                 double counter = 0;
                 double totalCount = 0;
+                //double averageValue = 0;
                 foreach (CPDataGeo data in CPdata)
+                //{                    
                     totalCount += data.geoData.Length;
+                    /*Parallel.ForEach(data.geoData, tuplya =>
+                    {
+                        foreach (double v in tuplya.values)
+                            averageValue += Math.Abs(v);
+                    });
+                }
+                averageValue /= totalCount;*/
 
                 Parallel.ForEach(CPdata, (data) =>
                 {
                     int part = 0;
                     int triggerPart = data.geoData.Length / 100;
-                    foreach (DataTuplyaGeo tuplya in data.geoData)
+                    Parallel.ForEach(data.geoData, tuplya =>
                     {
                         double value = 0;
                         foreach (double v in tuplya.values)
-                            value += Math.Abs(v);
+                            value += Math.Abs(v);                        
+
                         emptyValuesMap.putValue(tuplya.coordinate.Latitude, tuplya.coordinate.Longitude, value);
                         counter++;
                         part++;
@@ -89,7 +99,7 @@ namespace CarsAndPitsWPF
                             part = 0;
                             bw.ReportProgress((int)(counter / totalCount * 100));
                         }
-                    }
+                    });
                 });
             };
             bw.ProgressChanged += processHandler;

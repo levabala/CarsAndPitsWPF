@@ -21,7 +21,10 @@ namespace CarsAndPitsWPF
         public Square zeroSquare = new Square(-90, -180, 0, 0);
         public int maxDepth = 3;
         public double maxValue = 200;
+        public double averageBottomValue = 0;
+        public double maxBottomValue = double.MinValue;
         public int totalSquaresCount = 0;
+        public int totalValuesContains = 0;
         public string accuracy = "0m";
 
         private Square lastUpperSquare;
@@ -59,6 +62,11 @@ namespace CarsAndPitsWPF
         {            
             putToSquareTree(lat, lng, value);
             maxValue = zeroSquare.value * 1.001;
+
+            if (value > maxBottomValue) maxBottomValue = value;
+
+            averageBottomValue = (averageBottomValue * totalValuesContains + value) / (totalValuesContains + 1);
+            totalValuesContains++;
         }  
         
         public double getValue(double lat, double lng)

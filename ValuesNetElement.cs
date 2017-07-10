@@ -87,9 +87,9 @@ namespace CarsAndPitsWPF
             Square[] squaresToRender = net.getCachedSquares();
             if (squaresToRender == null)
             {
-                drawRect(new SquareRect(net.zeroSquare, net.maxValue), drawingContext);
+                drawRect(new SquareRect(net.zeroSquare, net.averageBottomValue, net.maxDepth), drawingContext);
                 foreach (Square square in net.getChildSquares(net.zeroSquare, 2))
-                    drawRect(new SquareRect(square, net.maxValue), drawingContext);
+                    drawRect(new SquareRect(square, net.averageBottomValue, net.maxDepth), drawingContext);
                 return;
             }
 
@@ -113,7 +113,7 @@ namespace CarsAndPitsWPF
             SquareRect[] sRects = new SquareRect[squares.Length];           
 
             for (int i = 0; i < squares.Length; i++)
-                sRects[i] = new SquareRect(squares[i], net.maxValue);
+                sRects[i] = new SquareRect(squares[i], net.averageBottomValue, net.maxDepth);
 
             return sRects;
         }
@@ -134,31 +134,5 @@ namespace CarsAndPitsWPF
 
             return new Point[] { zeroPoint, endPoint };
         }
-    }
-
-    struct SquareRect
-    {
-        public Rect rect;
-        public Brush brush;
-        public Pen pen;
-        public int[] path;
-
-        public SquareRect(Square square, double maxValue)
-        {
-            double width = 360 / Math.Pow(2, square.level);
-            double height = 180 / Math.Pow(2, square.level);
-            double left = square.lng;// + 180;
-            double top = square.lat;// + 90;
-            rect = new Rect(left, top, width, height);
-
-            double intesity = ((square.value != 0 && square.level != 0) ? square.value : 1) / maxValue * 255;
-            Color color = Color.FromRgb(255, (byte)intesity, (byte)intesity);
-            brush = new SolidColorBrush(color);
-            brush.Opacity = 0.1;
-
-            pen = new Pen(Brushes.Black, width * 0.003 * Math.Pow(2, square.level));
-
-            path = square.path;
-        }
-    }
+    }    
 }

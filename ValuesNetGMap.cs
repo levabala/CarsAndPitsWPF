@@ -85,9 +85,9 @@ namespace CarsAndPitsWPF
             Square[] squaresToRender = net.getCachedSquares();
             if (squaresToRender == null)
             {                
-                drawRect(new SquareRect(net.zeroSquare, net.maxValue), drawingContext);
+                drawRect(new SquareRect(net.zeroSquare, net.averageBottomValue, net.maxDepth), drawingContext);
                 foreach (Square square in net.getChildSquares(net.zeroSquare, 2))
-                    drawRect(new SquareRect(square, net.maxValue), drawingContext);
+                    drawRect(new SquareRect(square, net.averageBottomValue, net.maxDepth), drawingContext);
                 return;
             }
 
@@ -110,7 +110,7 @@ namespace CarsAndPitsWPF
             SquareRect[] sRects = new SquareRect[squares.Length];
 
             for (int i = 0; i < squares.Length; i++)
-                sRects[i] = new SquareRect(squares[i], net.maxValue);
+                sRects[i] = new SquareRect(squares[i], net.averageBottomValue, net.maxDepth);
 
             return sRects;
         }        
